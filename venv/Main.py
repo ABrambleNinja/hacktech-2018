@@ -41,7 +41,7 @@ def new_game():
         # Initialize the game
         newGame = Game(num_players, isFancy, location_type, time_limit, get_location())
         # Find new game location (available ID)
-        indexValue = Game.next_game_id()
+        indexValue = DATA.next_game_id()
 
         # Add the game in the right ID location
         if indexValue is None:
@@ -150,6 +150,14 @@ class Data:
         json_data = open("locations.json").read()
         self.locations_dict = json.loads(json_data)
 
+    def next_game_id(self):
+        ''' Gets the index of the game array to insert the new game,
+         or returns None if it should be appended '''
+        for i in range(len(self.games)):
+            if self.games[i] == None:
+                return i
+        return None
+
 class Game:
     ''' Each game will be an instance of this object '''
     def __init__(self, num_people, fancy=True,
@@ -242,17 +250,6 @@ class Game:
             if num >= self.num_people:
                 return "Win"
         return "Loss"
-
-
-    @staticmethod
-    def next_game_id():
-        ''' Gets the index of the game array to insert the new game,
-         or returns None if it should be appended '''
-        for i in range(len(DATA.games)):
-            if DATA.games[i] == None:
-                return i
-        return None
-
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(24)
