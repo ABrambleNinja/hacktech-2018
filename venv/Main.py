@@ -3,7 +3,7 @@ import pprint
 import random
 import os
 
-from flask import Flask, session, render_template, request, url_for, abort, session
+from flask import Flask, session, render_template, request, url_for, abort
 
 
 app = Flask(__name__)
@@ -70,8 +70,13 @@ class Game:
         ''' Change the number of people currently in the game '''
         self.num_people = num_people
 
-    def join_game(self):
+    def join_game(self, gameid):
         ''' Allows a new person to join the game '''
+        if session['gameid'] == gameid: # person is already here
+            return (self.player_dictionary[session['userid']], self.location)
+
+        session['gameid'] = gameid
+        session['playerid'] = self.current_players
 
         # When a new person joins a game, we need to increment the number of
         # people in the game, and then give them a role that is available
@@ -175,7 +180,7 @@ def join_game(id_num):
         abort(404, description="Not a Valid Game")
     else:
         game = DATA.games[int(id_num)]
-        role, location = game.join_game()
+        role, location = game.join_game(int(id_num))
 
     return render_template("game.html", gameID=id_num,
                            numPlayers=game.current_players,
