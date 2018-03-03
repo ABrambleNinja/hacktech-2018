@@ -188,8 +188,22 @@ def join_game(id_num):
 @app.route('/gpsdata', methods=["POST"])
 def gpsdata():
     ''' Gets GPS coordinates from '''
+    userloc = request.data
+    pprint(userloc)
     pprint(request.data)
+
     return "this is the return thingy"
+
+
+def gpslist():
+    ''' Adds the user's location to the database of lists '''
+
+    pass
+
+def calculateDist(userloc,x):
+    '''Finds all the locations in the list that are within x miles of user'''
+
+    pass
 
 
 @app.errorhandler(404)
@@ -202,7 +216,7 @@ def get_some_role():
 
 
 def get_location():
-    ''' Returns a random location from the set of possible values '''
+    ''' Returns the user's location from the set of possible values '''
     return random.choice(list(DATA.locations_dict.keys()))
 
 
