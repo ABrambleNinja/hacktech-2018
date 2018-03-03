@@ -1,0 +1,25 @@
+<html>
+<head>
+  <title>SAD</title>
+</head>
+<body>
+  <p id="gps">Latitude: ??? <br/>
+    Longitude: ???
+  </p>
+  <button onclick="getLocation()">Get Location</button>
+</body>
+<script>
+    var x = document.getElementById("gps");
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    function showPosition(position) {
+        x.innerHTML = "Latitude: " + position.coords.latitude + 
+        "<br>Longitude: " + position.coords.longitude; 
+    }
+</script>
+</html>
