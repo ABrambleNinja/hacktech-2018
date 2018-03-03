@@ -6,6 +6,7 @@ from flask import Flask, render_template, url_for
 
 app = Flask(__name__)
 
+
 class Data:
     def __init__(self):
         self.debugging = True
@@ -55,6 +56,19 @@ class Game:
         @params:
         location - String
         roles - List'''
+        pass
+
+    def make_guess():
+        '''
+        Allows a single user to make a guess for who they think the
+        spy is.
+        '''
+        pass
+
+    def game_over():
+        '''
+        Checks if the game is over
+        '''
         pass
 
     @staticmethod
