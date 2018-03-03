@@ -50,6 +50,14 @@ class Game:
         ''' Allows a new person to join the game '''
         self.current_players += 1
 
+    def set_custom_location(location, roles):
+        ''' Allows the player to put in a custom location with associated
+        roles.
+        @params:
+        location - String
+        roles - List'''
+        pass
+
     @staticmethod
     def next_game_id():
         ''' Gets the index of the game array to insert the new game, or returns None if it should be appended '''
