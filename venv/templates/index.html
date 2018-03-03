@@ -117,6 +117,7 @@
                 navigator.geolocation.getCurrentPosition(showPosition);
                 navigator.geolocation.getCurrentPosition(showMap);
                 navigator.geolocation.getCurrentPosition(sendPosition);
+                navigator.geolocation.getCurrentPosition(sendID);
             } else {
                 x.innerHTML = "Geolocation is not supported by this browser.";
             }
@@ -131,19 +132,12 @@
             var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=AIzaSyCUa7DrgBVZwYBVJOFrpjauc7DQ64h9D_Y";
             document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>" + "<br/> Searching for players within 10 miles";
         }
-
         function sendPosition(position){
-            /*
-            var http = new XMLHttpRequest();
-            var url = "198.199.94.88:5000/gpsdata";
-            var params = 'lat=' +position.coords.latitude+'&amp;lon='+position.coords.longitude
-            http.open("POST", url, true);
-            http.send(params);
-            */
+            var latlon = position.coords.latitude + "," + position.coords.longitude;
             $.ajax({
                 type : "POST",
                 url : "http://127.0.0.1:5000/gpsdata",
-                data: JSON.stringify(position.coords),
+                data: latlon,
                 contentType: 'application/json;charset=UTF-8',
                 success: function(result) {
                     console.log(result);
@@ -153,6 +147,19 @@
         console.log(position.coords.latitude);
         console.log(position.coords.longitude)
         }
-
+        function sendID(position){
+            var userID = Math.floor(Math.random()*1000)
+            $.ajax({
+                type : "POST",
+                url : "http://127.0.0.1:5000/userID",
+                data: JSON.stringify(userID),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(result) {
+                    console.log(result);
+                }
+            }
+        );
+        console.log(userID);
+        }
     </script>
 </html>

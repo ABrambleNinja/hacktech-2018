@@ -7,7 +7,7 @@ from flask import Flask, session, render_template, request, url_for, abort, sess
 
 
 app = Flask(__name__)
-
+playerList = {}
 
 class Data:
     def __init__(self):
@@ -187,23 +187,28 @@ def join_game(id_num):
 
 @app.route('/gpsdata', methods=["POST"])
 def gpsdata():
-    ''' Gets GPS coordinates from '''
-    userloc = request.data
-    pprint(userloc)
-    pprint(request.data)
+    ''' Gets GPS coordinates from the user, appends to the list'''
+    data = request.data
+    print(data)
+    return json.dumps("this is the return thingy")
 
-    return "this is the return thingy"
-
-
-def gpslist():
+@app.route('/userID', methods=["POST"])
+def gpsdata():
+    ''' Gets ID from the user'''
+    data = request.data
+    print(data)
+    return json.dumps("this is the test")
+"""
+def addGPS():
     ''' Adds the user's location to the database of lists '''
 
-    pass
+    return playerList
 
 def calculateDist(userloc,x):
     '''Finds all the locations in the list that are within x miles of user'''
 
     pass
+"""
 
 
 @app.errorhandler(404)

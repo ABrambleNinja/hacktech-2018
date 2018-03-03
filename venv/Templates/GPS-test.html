@@ -35,17 +35,10 @@
     }
 
     function sendPosition(position){
-        /*
-        var http = new XMLHttpRequest();
-        var url = "198.199.94.88:5000/gpsdata";
-        var params = 'lat=' +position.coords.latitude+'&amp;lon='+position.coords.longitude
-        http.open("POST", url, true);
-        http.send(params);
-        */
         $.ajax({
             type : "POST",
             url : "http://127.0.0.1:5000/gpsdata",
-            data: JSON.stringify(position.coords),
+            params: (position.coords.latitude,position.coords.longitude),
             contentType: 'application/json;charset=UTF-8',
             success: function(result) {
                 console.log(result);
