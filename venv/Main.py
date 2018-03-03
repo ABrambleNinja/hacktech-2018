@@ -56,7 +56,7 @@ class Game:
         ''' Change the number of people currently in the game '''
         self.num_people = num_people
 
-    def join_game(self, ):
+    def join_game(self, player):
         ''' Allows a new person to join the game '''
         self.current_players += 1
 
@@ -105,7 +105,7 @@ def new_game():
     # add the game in the right place
     if index is not None:
         DATA.games.append(game)
-        index = len(games)
+        index = len(DATA.games)
     else:
         DATA.games[index] = game
 
