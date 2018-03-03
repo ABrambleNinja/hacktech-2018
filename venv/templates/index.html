@@ -5,31 +5,71 @@
         </title>
     </head>
     <body>
+        <div id="root"></div>
+
         <button onclick="create_game()">Create Game!</button>
+        <br>
         <textarea id="game_num">Enter the ID here</textarea>
-        <button onclick="join_game()">"Join Game"</button>
+        <br>
+        <button>
+            <a id="join_game_btn" onmousedown="join_game()" href="">"Join Game"</a>
+        </button>
+        <br>
+        <button onclick="getLan()">
+            See LAN Games
+        </button>
+        <div id="lan results"></div>
+        <br>
+        <textarea id="game_url">
+            - No Game Created -
+        </textarea>
+        <br>
+        <button onclick="copyURL()">
+            Copy URL
+        </button>
+        <br>
+        <br>
+        Number of People: <input id="num_people" type="text">
+        <!-- Make this a dropdown -->
+        Custom Location: No
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="/static/js/main.js"></script>
         <script>
             function create_game() {
+                num_people = document.getElementById('num_people').value;
+                console.log(num_people);
                 $.ajax({
                     type : "POST",
                     url : "newgame",
+                    data: JSON.stringify(num_people),
+                    dataType: 'json',
+                    contentType: 'application/json;charset=UTF-8',
                     success: function(result) {
-                        console.log(result);
+                        $('#game_num').html(result);
+                        $('#game_url').html("secretagentdescent.com/game/" + result);
                     }
                 });
             }
             function join_game() {
-                var game_id = document.getElementById("game_num").innerHTML;
+                var game_id = document.getElementById("game_num").value;
+                $('#join_game_btn').attr("href", "/game/" + game_id);
+            }
+
+            function getLan() {
                 $.ajax({
                     type : "POST",
-                    url : "",
-                    data: JSON.stringify(data),
-                    contentType: 'application/json;charset=UTF-8',
+                    url : "lanGames",
                     success: function(result) {
-                        console.log(result);
+                        $('#lan results').html(results);
                     }
                 });
+            }
+
+            function copyURL() {
+                var copyTextarea = document.querySelector('#game_url');
+                copyTextarea.select();
+                document.execCommand('copy');
             }
         </script>
     </body>
