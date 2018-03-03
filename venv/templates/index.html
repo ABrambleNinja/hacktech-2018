@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>
-
-        </title>
+        <title>SAD</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     </head>
     <body>
         <div id="root"></div>
@@ -104,6 +103,13 @@
                 document.execCommand('copy');
             }
         </script>
+        <p id="gps">Latitude: ??? <br/>
+            Longitude: ???
+        </p>
+        <button onclick="getLocation()">Get Location</button>
+        <p id="mapholder">
+            This is a placeholder for the fudging gosh darned map that will appear here
+        </p>
     </body>
     
     <script>
@@ -142,20 +148,6 @@
         );
         console.log(position.coords.latitude);
         console.log(position.coords.longitude)
-        }
-        function sendID(position){
-            var userID = Math.floor(Math.random()*1000)
-            $.ajax({
-                type : "POST",
-                url : "http://127.0.0.1:5000/userID",
-                data: JSON.stringify(userID),
-                contentType: 'application/json;charset=UTF-8',
-                success: function(result) {
-                    console.log(result);
-                }
-            }
-        );
-        console.log(userID);
         }
     </script>
 </html>
