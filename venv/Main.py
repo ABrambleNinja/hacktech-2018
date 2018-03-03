@@ -2,7 +2,7 @@ import json
 import pprint
 import random
 
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
@@ -80,6 +80,10 @@ def get_role(location, fancy=True):
     else:
         return role
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html')
+
 
 def testing():
     ''' A function used on startup if in debugging mode '''
@@ -94,4 +98,4 @@ if __name__ == "__main__":
     if DATA.debugging:
         testing()
 
-    app.run()
+    app.run(host='0.0.0.0')
