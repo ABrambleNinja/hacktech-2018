@@ -1,5 +1,6 @@
 import json
 
+
 class Data:
     def __init__(self):
         ''' Initializes all of the data storage objects for the
