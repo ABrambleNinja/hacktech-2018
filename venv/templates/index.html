@@ -1,14 +1,159 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>Demo</title>
-</head>
-<body>
-    <h1>Demo</h1>
+    <head>
+        <title>SAD</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div id="root"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/react.min.js"></script>
+        <button onclick="create_game()">Create Game!</button>
+        <br>
+        <textarea id="game_num">Enter the ID here</textarea>
+        <br>
+        <button>
+            <a id="join_game_btn" onmousedown="join_game()" href="">"Join Game"</a>
+        </button>
+        <br>
+        <button onclick="getLan()">
+            See LAN Games
+        </button>
+        <div id="lan results"></div>
+        <br>
+        <textarea id="game_url">
+            - No Game Created -
+        </textarea>
+        <br>
+        <button onclick="copyURL()">
+            Copy URL
+        </button>
+        <br>
+        <br>
+        Number of People: <input id="num_people" type="text" value="{{ default_people }}">
+        <!-- Make this a dropdown -->
+        Custom Location: No
+        <br>
+        Fancy: <input id="isFancy" type="checkbox">
+        <br>
+        Location Picking:
+        <br>
+        Random:
+        <input id="r1" type="radio" name="locationPick" value="Random" checked>
+        <br>
+        Democratic
+        <input id="r2" type="radio" name="locationPick" value="Democratic">
+        <br>
+        Dictatorship
+        <input id="r3" type="radio" name="locationPick" value="Dictatorship">
+        <br>
+        Time Limit (Seconds)
+        <input type="checkbox" id="isTimeLimit">
+        <input id="timeLimit" type="text">
 
-    <script src="{{ url_2 }}"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="/static/js/main.js"></script>
+        <script>
+            function create_game() {
+                num_people = document.getElementById('num_people').value;
+                isFancy = document.getElementById('isFancy').checked;
+                if (document.getElementById('r1').checked ) {
+                    locationType = "random";
+                } else if (document.getElementById('r2') ) {
+                    locationType = "democratic";
+                } else if (document.getElementById('r3')) {
+                    locationType = "dictatorship";
+                }
+                isTimeLimit = document.getElementById('isTimeLimit').checked;
+                timeLimit = document.getElementById('timeLimit').value;
+                if (isTimeLimit == true) {
+                    var json_data = [num_people, isFancy, locationType, timeLimit];
+                } else {
+                    var json_data = [num_people, isFancy, locationType, 0];
+                }
+                $.ajax({
+                    type : "POST",
+                    url : "newgame",
+                    data: JSON.stringify(json_data),
+                    dataType: 'json',
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function(result) {
+                        $('#game_num').html(result);
+                        $('#game_url').html("secretagentdescent.com/game/" + result);
+                    }
+                });
+            }
+            function join_game() {
+                var game_id = document.getElementById("game_num").value;
+                $('#join_game_btn').attr("href", "/game/" + game_id);
+            }
+
+            function getLan() {
+                $.ajax({
+                    type : "POST",
+                    url : "lanGames",
+                    success: function(result) {
+                        $('#lan results').html(results);
+                    }
+                });
+            }
+
+            function copyURL() {
+                var copyTextarea = document.querySelector('#game_url');
+                copyTextarea.select();
+                document.execCommand('copy');
+            }
+        </script>
+        <p id="gps">Latitude: ??? <br/>
+            Longitude: ???
+        </p>
+            <button onclick="getLocation()">Get Location</button>
+        <p id="mapholder">
+            This is a placeholder for the fudging gosh darned map that will appear here
+        </p>
     </body>
+    <script>
+        var x = document.getElementById("gps");
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+                navigator.geolocation.getCurrentPosition(showMap);
+                navigator.geolocation.getCurrentPosition(sendPosition);
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+        function showPosition(position) {
+            x.innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude;
+        }
+
+        function showMap(position) {
+            var latlon = position.coords.latitude + "," + position.coords.longitude;
+            var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=AIzaSyCUa7DrgBVZwYBVJOFrpjauc7DQ64h9D_Y";
+            document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>" + "<br/> Searching for players within 10 miles";
+        }
+
+        function sendPosition(position){
+            /*
+            var http = new XMLHttpRequest();
+            var url = "198.199.94.88:5000/gpsdata";
+            var params = 'lat=' +position.coords.latitude+'&amp;lon='+position.coords.longitude
+            http.open("POST", url, true);
+            http.send(params);
+            */
+            $.ajax({
+                type : "POST",
+                url : "http://127.0.0.1:5000/gpsdata",
+                data: JSON.stringify(position.coords),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(result) {
+                    console.log(result);
+                }
+            }
+        );
+        console.log(position.coords.latitude);
+        console.log(position.coords.longitude)
+        }
+
+    </script>
 </html>
