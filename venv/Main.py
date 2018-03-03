@@ -1,13 +1,16 @@
-from flask import Flask
 import json
 import pprint
+import random
+
+from flask import Flask
 
 app = Flask(__name__)
 
-debugging = True
 app.config['DEBUG'] = debugging
 adjectives_list = []
 colors_list = []
+debugging = True
+role_list = []
 
 
 class Game:
@@ -40,14 +43,14 @@ def game():
     pass
 
 
-def load_ajectives():
+def load_json_ajectives():
     json_data = open("info.json").read()
     data = json.loads(json_data)
     adjectives_list = data["adjectives"]
     colors_list = data["colors"]
 
 
-def load_json_data():
+def load_json_roles():
     '''
     Gets all of the location and role data from the JSON file
     '''
@@ -60,18 +63,24 @@ def get_location():
     return "sample location"
 
 
-def get_person():
+def get_role(fancy=True):
     ''' '''
-    return
+    role = random.choice(role_list)
+    if (fancy):
+        color = random.choice(colors_list)
+        adjective = random.choice(adjectives_list)
+        return color + " " + adjective + " " + role
+    else:
+        return role
 
 
 def testing():
     ''' A function used on startup if in debugging mode '''
-    print("testing....")
-    load_ajectives()
-
+    print("In debugging mode")
 
 if __name__ == "__main__":
+    load_json_ajectives()
+    load_json_roles()
     if debugging:
         testing()
 
