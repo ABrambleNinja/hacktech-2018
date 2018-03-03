@@ -8,9 +8,16 @@
         <h1>
             This is game {{ gameID }}.
             <br>
-            There are {{ numPlayer }} in this game.
-            <br>
+            {% if numPlayers == 1 %}
+                There is {{ numPlayers }} player in this game out of {{ maxPlayers }}.
+            {% else %}
+                There are {{ numPlayers }} players in this game out of {{ maxPlayers }}.
+            {% endif %}
+                <br>
             Your role is {{ role }}.
+            {% if location != "UNKNOWN" %}
+                The location is {{ location }}.
+            {% endif %}
         </h1>
     </body>
 </html>>

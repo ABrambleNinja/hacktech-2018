@@ -1,15 +1,19 @@
 import json
 import pprint
 import random
+import os
 
-from flask import Flask, session, render_template, request, url_for, abort
+from flask import Flask, session, render_template, request, url_for, abort, session
+
 
 app = Flask(__name__)
 
 
 class Data:
     def __init__(self):
-        ''' '''
+        ''' Initializes all of the data storage objects for the
+        flask application '''
+        app.secret_key = os.urandom(24)
         self.GAME_CAP = 10
         self.DEFAULT_SIZE = 5
 
@@ -21,7 +25,8 @@ class Data:
         self.games = []
 
     def load_json_adjectives(self):
-        ''' '''
+        ''' Loads all of the adjectives and colors from the external info.JSON
+        file. Should only be done once per session. '''
         json_data = open("info.json").read()
         data = json.loads(json_data)
         self.adjectives_list = data["adjectives"]
@@ -44,10 +49,20 @@ class Game:
         self.location = get_location()
         # When the game starts, all of the roles are available
         self.available_roles = DATA.locations_dict[self.location]
-        self.player_dictionary = {player_id: role for player_id, role in
-                                  zip(list(range(num_people)),
-                                  self.available_roles)}
+        self.player_dictionary = {}
         self.fancy = fancy
+        # TODO: add support for more than one spy, and allow user to put in how many spies
+        # they would like to have
+        self.num_spies = 0
+        self.num_max_spies = 1
+        self.spy_id = -1
+        random.shuffle(self.available_roles)
+        self.pick_spy()
+
+    def pick_spy(self):
+        ''' Decides which people will be the spies '''
+        self.spy_id = random.randint(0, self.num_people-1)
+        self.num_spies += 1
 
     def update_size(self, num_people):
         ''' Change the number of people currently in the game '''
@@ -58,15 +73,26 @@ class Game:
 
         # When a new person joins a game, we need to increment the number of
         # people in the game, and then give them a role that is available
-
-        # TODO: make sure there aren't too many people in the game
-        # TODO: make sure that people get unique roles
         if self.current_players < self.num_people:
-            self.current_players += 1
-            role, fancy_role = get_role(self.location, self.fancy)
-            return fancy_role
+            if self.current_players == self.spy_id:
+                self.player_dictionary[self.current_players] = "Spy"
+                self.current_players += 1
+                return ("Spy", "UNKNOWN")
+            else:
+                role = self.available_roles[self.current_players]
+                if (self.fancy):
+                    role = self.fancify_role(role)
+                self.player_dictionary[self.current_players] = role
+                self.current_players += 1
+                return (role, self.location)
         else:
             abort(404, description="Too Many People in Game")
+
+    def fancify_role(self, role):
+        ''' Takes a regular role and makes it fancies '''
+        color = random.choice(DATA.colors_list)
+        adjective = random.choice(DATA.adjectives_list)
+        return color + " " + adjective[0].upper() + adjective[1:] + " " + role
 
     def set_custom_location(location, roles):
         ''' Allows the player to put in a custom location with associated
@@ -98,60 +124,71 @@ class Game:
                 return i
         return None
 
+
 @app.route('/')
 def index_page():
     ''' Renders the home page of the website '''
-    return render_template('index.html')
+    return render_template('index.html', default_people=DATA.DEFAULT_SIZE)
+
 
 @app.route('/newgame', methods=["POST"])
 def new_game():
     ''' Creates a new game '''
     # make new game
     L = request.get_json()
+    isFancy = L[1]
     try:
-        num_players = int(L)
-        print('got num players')
+        num_players = int(L[0])
     except:
-        # TODO: handle this
         num_players = DATA.DEFAULT_SIZE
 
     if (len(DATA.games) < DATA.GAME_CAP):
-        newGame = Game(num_players)
-        # find new game location
+        # Initialize the game
+        newGame = Game(num_players, isFancy)
+        # Find new game location (available ID)
         indexValue = Game.next_game_id()
 
-        # add the game in the right place
+        # Add the game in the right ID location
         if indexValue is None:
+            # If indexValue is None, we must add more slots
             DATA.games.append(newGame)
             indexValue = len(DATA.games) - 1
         else:
+            # Otherwise, we can add it to the regular location
             DATA.games[indexValue] = newGame
 
-        # send it back
+        # Return the ID of the game to the player (to get URL)
         return json.dumps(indexValue)
     else:
         return json.dumps("Cannot Create More Games")
 
+
 @app.route('/game/<int:id_num>')
-def game(id_num):
+def join_game(id_num):
     ''' Connects user to existing game - if possible '''
     if (id_num >= len(DATA.games) or (DATA.games[id_num] is None)):
         abort(404, description="Not a Valid Game")
     else:
         game = DATA.games[id_num]
-        info = game.join_game()
+        role, location = game.join_game()
 
-    return render_template("game.html", gameID=id_num, numPlayers=DATA.games[id_num].current_players, role=info)
+    return render_template("game.html", gameID=id_num,
+                           numPlayers=DATA.games[int(id_num)].current_players,
+                           role=role,
+                           maxPlayers=DATA.games[int(id_num)].num_people,
+                           location=location)
 
-@app.route('/gpsdata', methods = ["POST"])
+
+@app.route('/gpsdata', methods=["POST"])
 def gpsdata():
     ''' Gets GPS coordinates from '''
     pprint(request.data)
     return "this is the return thingy"
 
+
 @app.errorhandler(404)
 def page_not_found(description):
-    return render_template('404.html', desc = description)
+    return render_template('404.html', desc=description)
 
 @app.route('/role_test')
 def get_some_role():
@@ -173,6 +210,7 @@ def get_role(location, fancy=True):
         return (role, color + " " + adjective[0].upper() + adjective[1:] + " " + role)
     else:
         return role
+
 
 def testing():
     ''' A function used on startup if in debugging mode '''
