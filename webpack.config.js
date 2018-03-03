@@ -3,12 +3,13 @@ const path = require('path');
 module.exports = {
     entry: './ui/main.js',  // main.js is where I plan to write the JSX code
     output: {
-        path: path.resolve(__dirname, 'venv/static/js/'),
+        path: path.resolve(__dirname, 'venv/static/'),
         filename: "main.js"
     },
     module: {
         rules: [
-            { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
+            { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+            { test: /\.css$/, use: "css-loader"}
         ]
     }
 }
