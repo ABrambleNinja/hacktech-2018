@@ -27,19 +27,29 @@ def check_game_over():
 def new_game():
     ''' Creates a new game '''
     # make new game
+
+    # L[0] = numPlayers
+    # L[1] = isFancy
     L = request.get_json()
     isFancy = L[1]
     try:
         num_players = int(L[0])
+        assert(num_players >= 1)
     except:
-        num_players = DATA.DEFAULT_SIZE
+        return json.dumps(["error", "That is not a valid number of users."])
 
     location_type = L[2]
+
     time_limit = L[3]
+    if time_limit == "":
+        return json.dumps(["error", "You must put in a time limit."])
+    elif time_timie < 0:
+        return json.dumps(["error", "Time must be positive."])
 
     if (len(DATA.games) < DATA.GAME_CAP):
         # Initialize the game
-        newGame = Game(num_players, isFancy, location_type, time_limit, get_location())
+        newGame = Game(num_players, isFancy, location_type,
+                       time_limit, get_location())
         # Find new game location (available ID)
         indexValue = DATA.next_game_id()
 
@@ -53,14 +63,20 @@ def new_game():
             DATA.games[indexValue] = newGame
 
         # Return the ID of the game to the player (to get URL)
-        return json.dumps(indexValue)
+        return json.dumps(["ok", indexValue])
     else:
-        return json.dumps("Cannot Create More Games")
+        return json.dumps(["error", "Cannot Create More Games"])
 
 
-@app.route('/game/<int:id_num>')
+@app.route('/game/<id_num>')
 def join_game(id_num):
     ''' Connects user to existing game - if possible '''
+    print(id_num)
+    try:
+        id_num = int(id_num)
+    except:
+        abort(404, description="Not a Valid Game ID")
+
     if (id_num >= len(DATA.games) or (DATA.games[id_num] is None)):
         abort(404, description="Not a Valid Game")
     else:
