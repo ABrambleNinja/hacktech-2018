@@ -6,6 +6,7 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
+games = []
 
 class Data:
     def __init__(self):
@@ -49,6 +50,7 @@ class Game:
         ''' Allows a new person to join the game '''
         self.current_players += 1
 
+<<<<<<< HEAD
     def set_custom_location(location, roles):
         ''' Allows the player to put in a custom location with associated
         roles.
@@ -56,6 +58,15 @@ class Game:
         location - String
         roles - List'''
         pass
+=======
+    @staticmethod
+    def next_game_id():
+        ''' Gets the index of the game array to insert the new game, or returns None if it should be appended '''
+        for i in range(len(games)):
+            if games[i] == None:
+                return i
+        return None
+>>>>>>> 5edbed3dc3b9da7b10590765a6718f9316e66dba
 
 @app.route('/')
 def hello_world():
