@@ -2,7 +2,7 @@ import json
 import pprint
 import random
 
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 
 app = Flask(__name__)
 
@@ -47,7 +47,7 @@ class Game:
         ''' Change the number of people currently in the game '''
         self.num_people = num_people
 
-    def join_game(self, ):
+    def join_game(self):
         ''' Allows a new person to join the game '''
         self.current_players += 1
 
@@ -70,7 +70,7 @@ class Game:
 @app.route('/')
 def hello_world():
     ''' Index of the Page '''
-    return render_template('index.html')
+    return render_template('hello.html' )
 
 @app.route('/game/<id>')
 def game():
