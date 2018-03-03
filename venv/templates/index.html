@@ -32,7 +32,23 @@
         Number of People: <input id="num_people" type="text" value="{{ default_people }}">
         <!-- Make this a dropdown -->
         Custom Location: No
+        <br>
         Fancy: <input id="isFancy" type="checkbox">
+        <br>
+        Location Picking:
+        <br>
+        Random:
+        <input id="r1" type="radio" name="locationPick" value="Random" checked>
+        <br>
+        Democratic
+        <input id="r2" type="radio" name="locationPick" value="Democratic">
+        <br>
+        Dictatorship
+        <input id="r3" type="radio" name="locationPick" value="Dictatorship">
+        <br>
+        Time Limit (Seconds)
+        <input type="checkbox" id="isTimeLimit">
+        <input id="timeLimit" type="text">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script src="/static/js/main.js"></script>
@@ -40,7 +56,20 @@
             function create_game() {
                 num_people = document.getElementById('num_people').value;
                 isFancy = document.getElementById('isFancy').checked;
-                var json_data = [num_people, isFancy];
+                if (document.getElementById('r1').checked ) {
+                    locationType = "random";
+                } else if (document.getElementById('r2') ) {
+                    locationType = "democratic";
+                } else if (document.getElementById('r3')) {
+                    locationType = "dictatorship";
+                }
+                isTimeLimit = document.getElementById('isTimeLimit').checked;
+                timeLimit = document.getElementById('timeLimit').value;
+                if (isTimeLimit == true) {
+                    var json_data = [num_people, isFancy, locationType, timeLimit];
+                } else {
+                    var json_data = [num_people, isFancy, locationType, 0];
+                }
                 $.ajax({
                     type : "POST",
                     url : "newgame",

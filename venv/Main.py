@@ -42,11 +42,12 @@ class Data:
 
 class Game:
     ''' Each game will be an instance of this object '''
-    def __init__(self, num_people, fancy=True):
+    def __init__(self, num_people, fancy=True, location_type="random", time_limit=0):
         ''' Initializer for a new game '''
         self.num_people = num_people
         self.current_players = 0
-        self.location = get_location()
+        if location_type == "random":
+            self.location = get_location()
         # When the game starts, all of the roles are available
         self.available_roles = DATA.locations_dict[self.location]
         self.player_dictionary = {}
@@ -58,6 +59,7 @@ class Game:
         self.spy_id = -1
         random.shuffle(self.available_roles)
         self.pick_spy()
+        self.time_limit = time_limit
 
     def pick_spy(self):
         ''' Decides which people will be the spies '''
@@ -142,9 +144,12 @@ def new_game():
     except:
         num_players = DATA.DEFAULT_SIZE
 
+    location_type = L[2]
+    time_limit = L[3]
+
     if (len(DATA.games) < DATA.GAME_CAP):
         # Initialize the game
-        newGame = Game(num_players, isFancy)
+        newGame = Game(num_players, isFancy, location_type, time_limit)
         # Find new game location (available ID)
         indexValue = Game.next_game_id()
 
@@ -169,14 +174,15 @@ def join_game(id_num):
     if (id_num >= len(DATA.games) or (DATA.games[id_num] is None)):
         abort(404, description="Not a Valid Game")
     else:
-        game = DATA.games[id_num]
+        game = DATA.games[int(id_num)]
         role, location = game.join_game()
 
     return render_template("game.html", gameID=id_num,
-                           numPlayers=DATA.games[int(id_num)].current_players,
+                           numPlayers=game.current_players,
                            role=role,
-                           maxPlayers=DATA.games[int(id_num)].num_people,
-                           location=location)
+                           maxPlayers=game.num_people,
+                           location=location,
+                           time=game.time_limit)
 
 
 @app.route('/gpsdata', methods=["POST"])
