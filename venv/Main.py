@@ -182,8 +182,13 @@ class Game:
         ''' Change the number of people currently in the game '''
         self.num_people = num_people
 
-    def join_game(self):
+    def join_game(self, gameid):
         ''' Allows a new person to join the game '''
+        if 'gameid' in session and session['gameid'] == gameid: # person is already here
+            return (self.player_dictionary[session['userid']], self.location)
+
+        session['gameid'] = gameid
+        session['userid'] = self.current_players
 
         # When a new person joins a game, we need to increment the number of
         # people in the game, and then give them a role that is available
