@@ -6,13 +6,17 @@
   <p id="gps">Latitude: ??? <br/>
     Longitude: ???
   </p>
-  <button onclick="getLocation()">Get Location</button>
+  <button onclick="getLocation();showPosition2">Get Location</button>
+  <p id="mapholder">
+        This is a placeholder for the badass goddamn map that will appear here
+  </p>
 </body>
 <script>
     var x = document.getElementById("gps");
     function getLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
+            navigator.geolocation.getCurrentPosition(showMap);
         } else {
             x.innerHTML = "Geolocation is not supported by this browser.";
         }
@@ -21,5 +25,14 @@
         x.innerHTML = "Latitude: " + position.coords.latitude + 
         "<br>Longitude: " + position.coords.longitude; 
     }
+
+    function showMap(position) {
+    var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+    var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=AIzaSyCUa7DrgBVZwYBVJOFrpjauc7DQ64h9D_Y";
+
+    document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>";
+    }
+    
 </script>
 </html>
