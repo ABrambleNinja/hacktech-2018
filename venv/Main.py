@@ -68,6 +68,23 @@ def hello_world():
     ''' Index of the Page '''
     return ""
 
+@app.route('/newgame', methods = ["POST"])
+def new_game():
+    # make new game
+    game = Game()
+    # find new game location
+    index = DATA.next_game_id()
+
+    # add the game in the right place
+    if index == None:
+        DATA.games.append(game)
+        index = len(games)
+    else:
+        DATA.games[index] = game
+
+    # send it back
+    return index
+
 @app.route('/game/<id>')
 def game():
     ''' '''
