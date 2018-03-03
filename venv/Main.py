@@ -2,9 +2,10 @@ import json
 import pprint
 import random
 
-from flask import Flask, render_template
+from flask import Flask, session, render_template, request, url_for
 
 app = Flask(__name__)
+
 
 class Data:
     def __init__(self):
@@ -57,6 +58,19 @@ class Game:
         roles - List'''
         pass
 
+    def make_guess():
+        '''
+        Allows a single user to make a guess for who they think the
+        spy is.
+        '''
+        pass
+
+    def game_over():
+        '''
+        Checks if the game is over
+        '''
+        pass
+
     @staticmethod
     def next_game_id():
         ''' Gets the index of the game array to insert the new game, or returns None if it should be appended '''
@@ -70,7 +84,7 @@ def hello_world():
     ''' Index of the Page '''
     return render_template('index.html')
 
-@app.route('/newgame', methods = ["POST"])
+@app.route('/newgame', methods=["POST"])
 def new_game():
     # make new game
     game = Game()
@@ -96,6 +110,11 @@ def game(id):
         game = DATA.games[id]
         game.join_game()
 
+@app.route('/gpsdata', methods = ["POST"])
+def gpsdata():
+    ''' Gets GPS coordinates from '''
+    pprint request.data
+    return "this is the return thingy"
 
 @app.errorhandler(404)
 def page_not_found(e):
