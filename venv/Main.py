@@ -2,7 +2,7 @@ import json
 import pprint
 import random
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -96,6 +96,11 @@ def game(id):
         game = DATA.games[id]
         game.join_game()
 
+@app.route('/gpsdata', methods = ["POST"])
+def gpsdata():
+    ''' Gets GPS coordinates from '''
+    pprint request.data
+    return "this is the return thingy"
 
 @app.errorhandler(404)
 def page_not_found(e):
