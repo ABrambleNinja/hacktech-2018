@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>
+
+        </title>
+    </head>
+    <body>
+        <button onclick="create_game()">Create Game!</button>
+        <textarea id="game_num">Enter the ID here</textarea>
+        <button onclick="join_game()">"Join Game"</button>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script>
+            function create_game() {
+                $.ajax({
+                    type : "POST",
+                    url : "newgame",
+                    success: function(result) {
+                        console.log(result);
+                    }
+                });
+            }
+            function join_game() {
+                var game_id = document.getElementById("game_num").innerHTML;
+                $.ajax({
+                    type : "POST",
+                    url : "",
+                    data: JSON.stringify(data),
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function(result) {
+                        console.log(result);
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

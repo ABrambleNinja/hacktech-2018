@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 class Data:
     def __init__(self):
+        ''' '''
         self.debugging = True
         app.config['DEBUG'] = self.debugging
         self.adjectives_list = []
@@ -17,6 +18,7 @@ class Data:
         self.games = []
 
     def load_json_adjectives(self):
+        ''' '''
         json_data = open("info.json").read()
         data = json.loads(json_data)
         self.adjectives_list = data["adjectives"]
@@ -29,6 +31,13 @@ class Data:
         json_data = open("locations.json").read()
         self.locations_dict = json.loads(json_data)
 
+    def next_game_id(self):
+        '''
+        Gets the next available game ID
+        '''
+        # TODO
+        return 1
+
 
 class Game:
     ''' Each game will be an instance of this object '''
@@ -37,9 +46,10 @@ class Game:
         self.num_people = num_people
         self.current_players = 0
         self.location = get_location()
-        self.available_roles = get_roles(location)
+        self.available_roles = DATA.locations_dict[self.location]
         self.player_dictionary = {player_id: role for player_id, role in
-                                  zip(list(range(num_people)), roles)}
+                                  zip(list(range(num_people)),
+                                  self.available_roles)}
         self.fancy = fancy
 
     def update_size(self, num_people):
@@ -86,13 +96,14 @@ def hello_world():
 
 @app.route('/newgame', methods=["POST"])
 def new_game():
+    ''' '''
     # make new game
-    game = Game()
+    game = Game(5)
     # find new game location
     index = DATA.next_game_id()
 
     # add the game in the right place
-    if index == None:
+    if index is not None:
         DATA.games.append(game)
         index = len(games)
     else:
@@ -104,7 +115,7 @@ def new_game():
 @app.route('/game/<int:id>')
 def game(id):
     ''' Connects user to existing game'''
-    if (id not in range(len(DATA.games))) || (games[id] == None):
+    if (id not in range(len(DATA.games))) or (games[id] is not None):
         pass
     else:
         game = DATA.games[id]
@@ -113,7 +124,7 @@ def game(id):
 @app.route('/gpsdata', methods = ["POST"])
 def gpsdata():
     ''' Gets GPS coordinates from '''
-    pprint request.data
+    pprint(request.data)
     return "this is the return thingy"
 
 @app.errorhandler(404)
