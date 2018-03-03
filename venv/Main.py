@@ -202,7 +202,7 @@ def gpsdata():
     return json.dumps("this is the return thingy")
 
 @app.route('/userID', methods=["POST"])
-def gpsdata():
+def iddata():
     ''' Gets ID from the user'''
     data = request.data
     print(data)
