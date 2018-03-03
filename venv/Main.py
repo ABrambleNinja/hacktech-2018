@@ -89,8 +89,8 @@ def new_game():
     # send it back
     return index
 
-@app.route('/game/<id>')
-def game():
+@app.route('/game/<int:id>')
+def game(id):
     ''' '''
     pass
 
