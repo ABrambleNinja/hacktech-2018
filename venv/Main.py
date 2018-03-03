@@ -2,7 +2,7 @@ import json
 import pprint
 import random
 
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 
 app = Flask(__name__)
 
@@ -72,7 +72,7 @@ def hello_world():
     ''' Index of the Page '''
     return render_template('index.html')
 
-@app.route('/newgame', methods = ["POST"])
+@app.route('/newgame', methods=["POST"])
 def new_game():
     # make new game
     game = Game()
