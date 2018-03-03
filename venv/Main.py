@@ -111,7 +111,7 @@ def calculateDist(userloc, x):
 def page_not_found(description):
     return render_template('404.html', desc=description)
 
-@app.route('/role_test')
+
 def get_some_role():
     return get_role(get_location())
 
@@ -139,9 +139,16 @@ def testing():
     print(get_role(get_location(), True))
 
 if __name__ == "__main__":
+    app.secret_key = os.urandom(24)
+    debugging = True
+    app.config['DEBUG'] = debugging
+
     DATA = Data()
     DATA.load_json_adjectives()
     DATA.load_json_roles()
+    DATA.debugging = debugging
+
+
 
     if DATA.debugging:
         testing()

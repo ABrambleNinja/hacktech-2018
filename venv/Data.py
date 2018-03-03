@@ -1,13 +1,12 @@
+import json
+
 class Data:
     def __init__(self):
         ''' Initializes all of the data storage objects for the
         flask application '''
-        app.secret_key = os.urandom(24)
         self.GAME_CAP = 10
         self.DEFAULT_SIZE = 5
 
-        self.debugging = True
-        app.config['DEBUG'] = self.debugging
         self.adjectives_list = []
         self.colors_list = []
         self.locations_dict = {}
