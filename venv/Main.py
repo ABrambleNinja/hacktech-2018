@@ -5,7 +5,6 @@ import os
 
 from flask import Flask, session, render_template, request, url_for, abort
 
-
 app = Flask(__name__)
 
 
@@ -133,6 +132,11 @@ class Game:
 
 
 @app.route('/')
+<<<<<<< HEAD
+def hello_world():
+    ''' Index of the Page '''
+    return render_template('hello.html' )
+=======
 def index_page():
     ''' Renders the home page of the website '''
     return render_template('index.html', default_people=DATA.DEFAULT_SIZE)
@@ -202,7 +206,6 @@ def gpsdata():
 
 def gpslist():
     ''' Adds the user's location to the database of lists '''
-
     pass
 
 def calculateDist(userloc,x):
