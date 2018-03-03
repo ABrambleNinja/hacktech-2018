@@ -124,7 +124,7 @@ def game(id):
 @app.route('/gpsdata', methods = ["POST"])
 def gpsdata():
     ''' Gets GPS coordinates from '''
-    pprint(request.data)
+    print(request.data)
     return "this is the return thingy"
 
 @app.errorhandler(404)

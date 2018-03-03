@@ -45,14 +45,15 @@
         $.ajax({
             type : "POST",
             url : "http://127.0.0.1:5000/gpsdata",
-            data: JSON.stringify(position.coords.latitude),
+            data: JSON.stringify(position.coords),
             contentType: 'application/json;charset=UTF-8',
             success: function(result) {
                 console.log(result);
             }
         }
     );
-    console.log(position.coords.longitude);
+    console.log(position.coords.latitude);
+    console.log(position.coords.longitude)
     }
 
 </script>
