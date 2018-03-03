@@ -3,165 +3,54 @@ import pprint
 import random
 import os
 
-from flask import Flask, session, render_template, request, url_for, abort
+from flask import Flask, session, render_template, request, url_for, abort, session
 
 app = Flask(__name__)
 
-class Data:
-    def __init__(self):
-        ''' Initializes all of the data storage objects for the
-        flask application '''
-        app.secret_key = os.urandom(24)
-        self.GAME_CAP = 10
-        self.DEFAULT_SIZE = 5
-
-        self.debugging = True
-        app.config['DEBUG'] = self.debugging
-        self.adjectives_list = []
-        self.colors_list = []
-        self.locations_dict = {}
-        self.games = []
-        self.playerList = {}
-        self.playerID = 0
-        self.MAX_PLAYER_ID = 10000
-
-    def load_json_adjectives(self):
-        ''' Loads all of the adjectives and colors from the external info.JSON
-        file. Should only be done once per session. '''
-        json_data = open("info.json").read()
-        data = json.loads(json_data)
-        self.adjectives_list = data["adjectives"]
-        self.colors_list = data["colors"]
-
-    def load_json_roles(self):
-        '''
-        Gets all of the location and role data from the JSON file
-        '''
-        json_data = open("locations.json").read()
-        self.locations_dict = json.loads(json_data)
-
-
-class Game:
-    ''' Each game will be an instance of this object '''
-    def __init__(self, num_people, fancy=True, location_type="random", time_limit=0):
-        ''' Initializer for a new game '''
-        self.num_people = num_people
-        self.current_players = 0
-        if location_type == "random":
-            self.location = get_location()
-        # When the game starts, all of the roles are available
-        self.available_roles = DATA.locations_dict[self.location]
-        self.player_dictionary = {}
-        self.fancy = fancy
-        # TODO: add support for more than one spy, and allow user to put in how many spies
-        # they would like to have
-        self.num_spies = 0
-        self.num_max_spies = 1
-        self.spy_id = -1
-        random.shuffle(self.available_roles)
-        self.pick_spy()
-        self.time_limit = time_limit
-
-    def pick_spy(self):
-        ''' Decides which people will be the spies '''
-        self.spy_id = random.randint(0, self.num_people-1)
-        self.num_spies += 1
-
-    def update_size(self, num_people):
-        ''' Change the number of people currently in the game '''
-        self.num_people = num_people
-
-    def join_game(self, gameid):
-        ''' Allows a new person to join the game '''
-        if 'gameid' in session and session['gameid'] == gameid: # person is already here
-            return (self.player_dictionary[session['userid']], self.location)
-
-        session['gameid'] = gameid
-        session['userid'] = self.current_players
-
-        # When a new person joins a game, we need to increment the number of
-        # people in the game, and then give them a role that is available
-        if self.current_players < self.num_people:
-            if self.current_players == self.spy_id:
-                self.player_dictionary[self.current_players] = "Spy"
-                self.current_players += 1
-                return ("Spy", "UNKNOWN")
-            else:
-                role = self.available_roles[self.current_players]
-                if (self.fancy):
-                    role = self.fancify_role(role)
-                self.player_dictionary[self.current_players] = role
-                self.current_players += 1
-                return (role, self.location)
-        else:
-            abort(404, description="Too Many People in Game")
-
-    def fancify_role(self, role):
-        ''' Takes a regular role and makes it fancies '''
-        color = random.choice(DATA.colors_list)
-        adjective = random.choice(DATA.adjectives_list)
-        return color + " " + adjective[0].upper() + adjective[1:] + " " + role
-
-    def set_custom_location(location, roles):
-        ''' Allows the player to put in a custom location with associated
-        roles.
-        @params:
-        location - String
-        roles - List'''
-        pass
-
-    def make_guess():
-        '''
-        Allows a single user to make a guess for who they think the
-        spy is.
-        '''
-        pass
-
-    def game_over():
-        '''
-        Checks if the game is over
-        '''
-        pass
-
-    @staticmethod
-    def next_game_id():
-        ''' Gets the index of the game array to insert the new game,
-         or returns None if it should be appended '''
-        for i in range(len(DATA.games)):
-            if DATA.games[i] == None:
-                return i
-        return None
-
-
 @app.route('/')
-def hello_world():
-    ''' Index of the Page '''
-    return render_template('index.html' )
-
 def index_page():
-    ''' Renders the home page of the website '''
+    ''' Index of the Page '''
     return render_template('index.html', default_people=DATA.DEFAULT_SIZE)
 
+
+@app.route('/checkGameOver', methods=["POST"])
+def check_game_over():
+    ''' Given a game ID, checks if the spy was discovered or not based on
+    the current. '''
+    game_id = request.get_json()
+    game = DATA.games[int(game_id)]
+    status = game.checkGameOver()
+    return json.dumps(status)
 
 @app.route('/newgame', methods=["POST"])
 def new_game():
     ''' Creates a new game '''
     # make new game
+
+    # L[0] = numPlayers
+    # L[1] = isFancy
     L = request.get_json()
     isFancy = L[1]
     try:
         num_players = int(L[0])
+        assert(num_players >= 1)
     except:
-        num_players = DATA.DEFAULT_SIZE
+        return json.dumps(["error", "That is not a valid number of users."])
 
     location_type = L[2]
+
     time_limit = L[3]
+    if time_limit == "":
+        return json.dumps(["error", "You must put in a time limit."])
+    elif time_limit < 0:
+        return json.dumps(["error", "Time must be positive."])
 
     if (len(DATA.games) < DATA.GAME_CAP):
         # Initialize the game
-        newGame = Game(num_players, isFancy, location_type, time_limit)
+        newGame = Game(num_players, isFancy, location_type,
+                       time_limit, get_location())
         # Find new game location (available ID)
-        indexValue = Game.next_game_id()
+        indexValue = DATA.next_game_id()
 
         # Add the game in the right ID location
         if indexValue is None:
@@ -173,14 +62,20 @@ def new_game():
             DATA.games[indexValue] = newGame
 
         # Return the ID of the game to the player (to get URL)
-        return json.dumps(indexValue)
+        return json.dumps(["ok", indexValue])
     else:
-        return json.dumps("Cannot Create More Games")
+        return json.dumps(["error", "Cannot Create More Games"])
 
 
-@app.route('/game/<int:id_num>')
+@app.route('/game/<id_num>')
 def join_game(id_num):
     ''' Connects user to existing game - if possible '''
+    print(id_num)
+    try:
+        id_num = int(id_num)
+    except:
+        abort(404, description="Not a Valid Game ID")
+
     if (id_num >= len(DATA.games) or (DATA.games[id_num] is None)):
         abort(404, description="Not a Valid Game")
     else:
@@ -193,7 +88,6 @@ def join_game(id_num):
                            maxPlayers=game.num_people,
                            location=location,
                            time=game.time_limit)
-
 
 @app.route('/gpsdata', methods=["POST"])
 def gpsdata():
@@ -221,19 +115,9 @@ def calculateDist(userID,userID2):
     
     pass
 
-
 @app.errorhandler(404)
 def page_not_found(description):
     return render_template('404.html', desc=description)
-
-@app.route('/role_test')
-def get_some_role():
-    return get_role(get_location())
-
-
-def get_location():
-    ''' Returns the user's location from the set of possible values '''
-    return random.choice(list(DATA.locations_dict.keys()))
 
 
 def get_role(location, fancy=True):
@@ -248,17 +132,152 @@ def get_role(location, fancy=True):
         return role
 
 
-def testing():
-    ''' A function used on startup if in debugging mode '''
-    print("In debugging mode")
-    print(get_role(get_location(), True))
+def get_location():
+        ''' Returns the user's location from the set of possible values '''
+        return random.choice(list(DATA.locations_dict.keys()))
+
+
+class Data:
+    def __init__(self):
+        ''' Initializes all of the data storage objects for the
+        flask application '''
+        self.GAME_CAP = 10
+        self.DEFAULT_SIZE = 5
+
+        self.adjectives_list = []
+        self.colors_list = []
+        self.locations_dict = {}
+        self.games = []
+        self.playerList = {}
+        self.playerID = 0
+        self.MAX_PLAYER_ID = 10000
+
+    def load_json_adjectives(self):
+        ''' Loads all of the adjectives and colors from the external info.JSON
+        file. Should only be done once per session. '''
+        json_data = open("info.json").read()
+        data = json.loads(json_data)
+        self.adjectives_list = data["adjectives"]
+        self.colors_list = data["colors"]
+
+    def load_json_roles(self):
+        '''
+        Gets all of the location and role data from the JSON file
+        '''
+        json_data = open("locations.json").read()
+        self.locations_dict = json.loads(json_data)
+
+    def next_game_id(self):
+        ''' Gets the index of the game array to insert the new game,
+         or returns None if it should be appended '''
+        for i in range(len(self.games)):
+            if self.games[i] == None:
+                return i
+        return None
+
+class Game:
+    ''' Each game will be an instance of this object '''
+    def __init__(self, num_people, fancy=True,
+                 location_type="random", time_limit=0, location=None):
+        ''' Initializer for a new game '''
+        self.num_people = num_people
+        self.current_players = 0
+        self.location = location
+        # When the game starts, all of the roles are available
+        self.available_roles = DATA.locations_dict[self.location]
+        self.player_dictionary = {}
+        self.fancy = fancy
+        # TODO: add support for more than one spy, and allow user to put
+        #  in how many spies they would like to have
+        self.num_spies = 0
+        self.num_max_spies = 1
+        self.spy_id = -1
+        random.shuffle(self.available_roles)
+        self.pick_spy()
+        self.time_limit = time_limit
+
+
+
+    def pick_spy(self):
+        ''' Decides which people will be the spies '''
+        self.spy_id = random.randint(0, self.num_people-1)
+        self.num_spies += 1
+
+    def update_size(self, num_people):
+        ''' Change the number of people currently in the game '''
+        self.num_people = num_people
+
+    def join_game(self, gameid):
+        ''' Allows a new person to join the game '''
+        if 'gameid' in session and session['gameid'] == gameid: # person is already here
+            return (self.player_dictionary[session['userid']][0], self.location)
+
+        session['gameid'] = gameid
+        session['userid'] = self.current_players
+
+        # When a new person joins a game, we need to increment the number of
+        # people in the game, and then give them a role that is available
+        if self.current_players < self.num_people:
+            if self.current_players == self.spy_id:
+                self.player_dictionary[self.current_players] = ["Spy", None]
+                self.current_players += 1
+                return ("Spy", "UNKNOWN")
+            else:
+                role = self.available_roles[self.current_players]
+                if (self.fancy):
+                    role = self.fancify_role(role)
+                self.player_dictionary[self.current_players] = [role, None]
+                self.current_players += 1
+                return (role, self.location)
+        else:
+            abort(404, description="Too Many People in Game")
+
+    def fancify_role(self, role):
+        ''' Takes a regular role and makes it fancies '''
+        color = random.choice(DATA.colors_list)
+        adjective = random.choice(DATA.adjectives_list)
+        return color + " " + adjective[0].upper() + adjective[1:] + " " + role
+
+    def set_custom_location(self, location, roles):
+        ''' Allows the player to put in a custom location with associated
+        roles.
+        @params:
+        location - String
+        roles - List'''
+        pass
+
+    def make_guess(self, layer_guessing, guess):
+        '''
+        Allows a single user to make a guess for who they think the
+        spy is.
+        '''
+        self.player_dictionary[player_guessing][1] = guess
+
+    def checkGameOver(self):
+        '''
+        Checks if the game is over
+        '''
+        timesAccused = [0 for i in range(self.num_people)]
+
+        print(self.player_dictionary)
+        for player_id, player_tuple in self.player_dictionary:
+            timesAccused[player_tuple[1]] += 1
+
+        for num in timesAccused:
+            if num >= self.num_people:
+                return "Win"
+        return "Loss"
+      
+    
 
 if __name__ == "__main__":
+    app.secret_key = os.urandom(24)
+    debugging = True
+    app.config['DEBUG'] = debugging
+
     DATA = Data()
     DATA.load_json_adjectives()
     DATA.load_json_roles()
-
-    if DATA.debugging:
-        testing()
+    DATA.debugging = debugging
 
     app.run(host='0.0.0.0')
