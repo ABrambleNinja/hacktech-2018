@@ -2,7 +2,7 @@ import json
 import pprint
 import random
 
-from flask import Flask, render_template, request
+from flask import Flask, session, render_template, request
 
 app = Flask(__name__)
 
