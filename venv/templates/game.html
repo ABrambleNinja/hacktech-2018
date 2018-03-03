@@ -35,57 +35,5 @@
                 <span id="timer" initial_value="{{ time }}"></span>
             {% endif %}
         </h1>
-        <p id="gps">Latitude: ??? <br/>
-            Longitude: ???
-        </p>
-          <button onclick="getLocation()">Get Location</button>
-         <p id="mapholder">
-            This is a placeholder for the badass goddamn map that will appear here
-        </p>
     </body>
-    <script>
-        var x = document.getElementById("gps");
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-                navigator.geolocation.getCurrentPosition(showMap);
-                navigator.geolocation.getCurrentPosition(sendPosition);
-            } else {
-                x.innerHTML = "Geolocation is not supported by this browser.";
-            }
-        }
-        function showPosition(position) {
-            x.innerHTML = "Latitude: " + position.coords.latitude +
-            "<br>Longitude: " + position.coords.longitude;
-        }
-
-        function showMap(position) {
-            var latlon = position.coords.latitude + "," + position.coords.longitude;
-            var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=AIzaSyCUa7DrgBVZwYBVJOFrpjauc7DQ64h9D_Y";
-            document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>" + "<br/> Searching for players... within a few miles";
-        }
-
-        function sendPosition(position){
-            /*
-            var http = new XMLHttpRequest();
-            var url = "198.199.94.88:5000/gpsdata";
-            var params = 'lat=' +position.coords.latitude+'&amp;lon='+position.coords.longitude
-            http.open("POST", url, true);
-            http.send(params);
-            */
-            $.ajax({
-                type : "POST",
-                url : "http://127.0.0.1:5000/gpsdata",
-                data: JSON.stringify(position.coords),
-                contentType: 'application/json;charset=UTF-8',
-                success: function(result) {
-                    console.log(result);
-                }
-            }
-        );
-        console.log(position.coords.latitude);
-        console.log(position.coords.longitude)
-        }
-
-    </script>
-</html>>
+</html>
