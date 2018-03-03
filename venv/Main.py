@@ -46,6 +46,8 @@ def new_game():
         return json.dumps(["error", "Time must be positive."])
 
     if (len(DATA.games) < DATA.GAME_CAP):
+        if num_players > DATA.MAX_SIZE:
+            num_players = DATA.MAX_SIZE
         # Initialize the game
         newGame = Game(num_players, isFancy, location_type,
                        time_limit, get_location())
@@ -91,7 +93,7 @@ def join_game(id_num):
 
 @app.route('/gpsdata', methods=["POST"])
 def gpsdata():
-    ''' Gets GPS coordinates from the user, assigns an ID, and 
+    ''' Gets GPS coordinates from the user, assigns an ID, and
     appends to the list'''
     data = request.data
     playerID = getID()
@@ -112,7 +114,7 @@ def getID():
 def calculateDist(userID,userID2):
     '''Finds all the locations in the list that are within x miles of
      user. Uses the formula from '''
-    
+
     pass
 
 @app.errorhandler(404)
@@ -143,6 +145,7 @@ class Data:
         flask application '''
         self.GAME_CAP = 10
         self.DEFAULT_SIZE = 5
+        self.MAX_SIZE = 100
 
         self.adjectives_list = []
         self.colors_list = []
@@ -195,8 +198,6 @@ class Game:
         random.shuffle(self.available_roles)
         self.pick_spy()
         self.time_limit = time_limit
-
-
 
     def pick_spy(self):
         ''' Decides which people will be the spies '''
@@ -267,8 +268,8 @@ class Game:
             if num >= self.num_people:
                 return "Win"
         return "Loss"
-      
-    
+
+
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(24)
