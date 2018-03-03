@@ -43,7 +43,7 @@ def new_game():
     time_limit = L[3]
     if time_limit == "":
         return json.dumps(["error", "You must put in a time limit."])
-    elif time_timie < 0:
+    elif time_limit < 0:
         return json.dumps(["error", "Time must be positive."])
 
     if (len(DATA.games) < DATA.GAME_CAP):
