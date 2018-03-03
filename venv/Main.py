@@ -6,8 +6,6 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-games = []
-
 class Data:
     def __init__(self):
         self.debugging = True
@@ -15,6 +13,7 @@ class Data:
         self.adjectives_list = []
         self.colors_list = []
         self.locations_dict = {}
+        self.games = []
 
     def load_json_adjectives(self):
         json_data = open("info.json").read()
@@ -29,6 +28,12 @@ class Data:
         json_data = open("locations.json").read()
         self.locations_dict = json.loads(json_data)
 
+    def next_game_id():
+        ''' Gets the index of the game array to insert the new game, or returns None if it should be appended '''
+        for i in range(len(self.games)):
+            if self.games[i] == None:
+                return i
+        return None
 
 class Game:
     ''' Each game will be an instance of this object '''
@@ -57,14 +62,6 @@ class Game:
         location - String
         roles - List'''
         pass
-
-    @staticmethod
-    def next_game_id():
-        ''' Gets the index of the game array to insert the new game, or returns None if it should be appended '''
-        for i in range(len(games)):
-            if games[i] == None:
-                return i
-        return None
 
 @app.route('/')
 def hello_world():
