@@ -7,6 +7,7 @@ app = Flask(__name__)
 debugging = True
 app.config['DEBUG'] = debugging
 adjectives_list = []
+colors_list = []
 
 
 class Game:
@@ -40,9 +41,10 @@ def game():
 
 
 def load_ajectives():
-    json_data = open("locations.json").read()
+    json_data = open("info.json").read()
     data = json.loads(json_data)
-    print(data)
+    adjectives_list = data["adjectives"]
+    colors_list = data["colors"]
 
 
 def load_json_data():
@@ -70,6 +72,7 @@ def testing():
 
 
 if __name__ == "__main__":
-    print('hello world')
     if debugging:
         testing()
+
+    app.run()
