@@ -8,9 +8,14 @@ from Data import Data
 from Game import Game
 
 app = Flask(__name__)
-
+playerList = {}
 
 @app.route('/')
+def hello_world():
+    ''' Index of the Page '''
+    return render_template('index.html' )
+
+
 def index_page():
     ''' Renders the home page of the website '''
     return render_template('index.html', default_people=DATA.DEFAULT_SIZE)
@@ -67,7 +72,7 @@ def join_game(id_num):
         abort(404, description="Not a Valid Game")
     else:
         game = DATA.games[int(id_num)]
-        role, location = game.join_game()
+        role, location = game.join_game(int(id_num))
 
     return render_template("game.html", gameID=id_num,
                            numPlayers=game.current_players,
@@ -79,17 +84,21 @@ def join_game(id_num):
 
 @app.route('/gpsdata', methods=["POST"])
 def gpsdata():
-    ''' Gets GPS coordinates from '''
-    userloc = request.data
-    pprint(userloc)
-    pprint(request.data)
+    ''' Gets GPS coordinates from the user, appends to the list'''
+    data = request.data
+    print(data)
+    return json.dumps("this is the return thingy")
 
-    return "this is the return thingy"
+@app.route('/userID', methods=["POST"])
+def iddata():
+    ''' Gets ID from the user'''
+    data = request.data
+    print(data)
+    return json.dumps("this is the test")
 
-
-def gpslist():
+def addGPS():
     ''' Adds the user's location to the database of lists '''
-
+    return playerList
     pass
 
 

@@ -1,8 +1,8 @@
+<!DOCTYPE html>
 <html>
     <head>
-        <title>
-
-        </title>
+        <title>SAD</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     </head>
     <body>
         <div id="root"></div>
@@ -103,5 +103,51 @@
                 document.execCommand('copy');
             }
         </script>
+        <p id="gps">Latitude: ??? <br/>
+            Longitude: ???
+        </p>
+        <button onclick="getLocation()">Get Location</button>
+        <p id="mapholder">
+            This is a placeholder for the fudging gosh darned map that will appear here
+        </p>
     </body>
+    
+    <script>
+        var x = document.getElementById("gps");
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+                navigator.geolocation.getCurrentPosition(showMap);
+                navigator.geolocation.getCurrentPosition(sendPosition);
+                navigator.geolocation.getCurrentPosition(sendID);
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+        function showPosition(position) {
+            x.innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude;
+        }
+
+        function showMap(position) {
+            var latlon = position.coords.latitude + "," + position.coords.longitude;
+            var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=AIzaSyCUa7DrgBVZwYBVJOFrpjauc7DQ64h9D_Y";
+            document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>" + "<br/> Searching for players within 10 miles";
+        }
+        function sendPosition(position){
+            var latlon = position.coords.latitude + "," + position.coords.longitude;
+            $.ajax({
+                type : "POST",
+                url : "http://127.0.0.1:5000/gpsdata",
+                data: latlon,
+                contentType: 'application/json;charset=UTF-8',
+                success: function(result) {
+                    console.log(result);
+                }
+            }
+        );
+        console.log(position.coords.latitude);
+        console.log(position.coords.longitude)
+        }
+    </script>
 </html>
