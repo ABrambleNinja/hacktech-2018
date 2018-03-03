@@ -11,6 +11,7 @@ adjectives_list = []
 colors_list = []
 debugging = True
 role_list = []
+games = []
 
 
 class Game:
@@ -19,7 +20,7 @@ class Game:
         ''' Initializer for a new game '''
         self.num_people = num_people
         self.current_players = 0
-        self.location = get_random_location()
+        self.location = get_location()
         self.available_roles = get_roles(location)
         self.player_dictionary = {player_id: role for player_id, role in
                                   zip(list(range(num_people)), roles)}
@@ -31,6 +32,14 @@ class Game:
     def join_game(self, ):
         ''' Allows a new person to join the game '''
         self.current_players += 1
+
+    @staticmethod
+    def next_game_id():
+        ''' Gets the index of the game array to insert the new game, or returns None if it should be appended '''
+        for i in range(len(games)):
+            if games[i] == None:
+                return i
+        return None
 
 @app.route('/')
 def hello_world():
