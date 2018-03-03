@@ -54,9 +54,13 @@
             {% if location != "UNKNOWN" %}
                 The location is {{ location }}.
             {% endif %}
+            <br>
             {% if time != 0 %}
                 <span id="timer" initial_value="{{ time }}"></span>
             {% endif %}
+            <br>
+            Enter Your Guess <input type="text">
+            <button>Confirm </button>
         </h1>
         <p id="gps">Latitude: ??? <br/>
             Longitude: ???

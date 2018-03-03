@@ -193,7 +193,7 @@ class Game:
     def join_game(self, gameid):
         ''' Allows a new person to join the game '''
         if 'gameid' in session and session['gameid'] == gameid: # person is already here
-            return (self.player_dictionary[session['userid']], self.location)
+            return (self.player_dictionary[session['userid']][0], self.location)
 
         session['gameid'] = gameid
         session['userid'] = self.current_players
