@@ -132,10 +132,9 @@ class Game:
 
 
 @app.route('/')
-
 def hello_world():
     ''' Index of the Page '''
-    return render_template('hello.html' )
+    return render_template('index.html' )
 
 def index_page():
     ''' Renders the home page of the website '''
