@@ -1,6 +1,7 @@
 from flask import Flask
 import json
 import pprint
+import random
 
 app = Flask(__name__)
 
@@ -15,12 +16,12 @@ def load_json_data():
     Gets all of the location and role data from the JSON file
     '''
     json_data=open(file_directory).read()
-    data = json.loads(json_data)
+    return json.loads(json_data)
 
 
 def get_location():
     ''' '''
-    return "sample location"
+    return random.choice(load_json_data())
 
 
 def get_person():
