@@ -6,7 +6,6 @@ import os
 from flask import Flask, session, render_template, request, url_for, abort
 
 app = Flask(__name__)
-playerList = {}
 
 class Data:
     def __init__(self):
@@ -22,6 +21,9 @@ class Data:
         self.colors_list = []
         self.locations_dict = {}
         self.games = []
+        self.playerList = {}
+        self.playerID = 0
+        self.MAX_PLAYER_ID = 10000
 
     def load_json_adjectives(self):
         ''' Loads all of the adjectives and colors from the external info.JSON
@@ -195,26 +197,28 @@ def join_game(id_num):
 
 @app.route('/gpsdata', methods=["POST"])
 def gpsdata():
-    ''' Gets GPS coordinates from the user, appends to the list'''
+    ''' Gets GPS coordinates from the user, assigns an ID, and 
+    appends to the list'''
     data = request.data
-    print(data)
-    return json.dumps("this is the return thingy")
+    playerID = getID()
+    DATA.playerList[playerID] = {data}
+    print(playerID)
+    session['playerID'] = playerID
+    return "Player is in the database"
 
-@app.route('/userID', methods=["POST"])
-def iddata():
-    ''' Gets ID from the user'''
-    data = request.data
-    print(data)
-    return json.dumps("this is the test")
+def getID():
+    '''Takes the global variable playerID, assigns it to a user, and
+       then increments by 1 to give the player a unique id'''
+    playerID = DATA.playerID
+    if 'playerID' in session:
+        return (session['playerID'])
+    DATA.playerID += 1
+    return playerID
 
-def addGPS():
-    ''' Adds the user's location to the database of lists '''
-    return playerList
-    pass
-
-def calculateDist(userloc,x):
-    '''Finds all the locations in the list that are within x miles of user'''
-
+def calculateDist(userID,userID2):
+    '''Finds all the locations in the list that are within x miles of
+     user. Uses the formula from '''
+    
     pass
 
 
