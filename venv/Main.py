@@ -6,9 +6,6 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-games = []
-
-
 class Data:
     def __init__(self):
         self.debugging = True
@@ -16,6 +13,7 @@ class Data:
         self.adjectives_list = []
         self.colors_list = []
         self.locations_dict = {}
+        self.games = []
 
     def load_json_adjectives(self):
         json_data = open("info.json").read()
@@ -91,8 +89,13 @@ def new_game():
 
 @app.route('/game/<int:id>')
 def game(id):
-    ''' '''
-    pass
+    ''' Connects user to existing game'''
+    if (id not in range(len(DATA.games))) || (games[id] == None):
+        pass
+    else:
+        game = DATA.games[id]
+        game.join_game()
+
 
 @app.errorhandler(404)
 def page_not_found(e):
