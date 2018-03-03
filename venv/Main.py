@@ -49,15 +49,27 @@ class Game:
         ''' Allows a new person to join the game '''
         self.current_players += 1
 
+    def set_custom_location(location, roles):
+        ''' Allows the player to put in a custom location with associated
+        roles.
+        @params:
+        location - String
+        roles - List'''
+        pass
+
 @app.route('/')
 def hello_world():
     ''' Index of the Page '''
-    return "Hello, World"
+    return ""
 
 @app.route('/game/<id>')
 def game():
     ''' '''
     pass
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html')
 
 @app.route('/role_test')
 def get_some_role():
@@ -79,10 +91,6 @@ def get_role(location, fancy=True):
         return color + " " + adjective[0].upper() + adjective[1:] + " " + role
     else:
         return role
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html')
 
 
 def testing():
