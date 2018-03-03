@@ -1,6 +1,7 @@
 <html>
 <head>
   <title>SAD</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
   <p id="gps">Latitude: ??? <br/>
@@ -34,18 +35,25 @@
     }
 
     function sendPosition(position){
+        /*
         var http = new XMLHttpRequest();
         var url = "198.199.94.88:5000/gpsdata";
-        var params = [latitude,longitude];
+        var params = 'lat=' +position.coords.latitude+'&amp;lon='+position.coords.longitude
         http.open("POST", url, true);
-
-        //Send the proper header information along with the request
-        http.setRequestHeader("Content-type", "some stuff");
-
         http.send(params);
-
+        */
+        $.ajax({
+            type : "POST",
+            url : "http://127.0.0.1:5000/gpsdata",
+            data: JSON.stringify(position.coords.latitude),
+            contentType: 'application/json;charset=UTF-8',
+            success: function(result) {
+                console.log(result);
+            }
+        }
+    );
+    console.log(position.coords.longitude);
     }
-    
 
 </script>
 </html>
