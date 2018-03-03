@@ -31,7 +31,7 @@
     function showMap(position) {
         var latlon = position.coords.latitude + "," + position.coords.longitude;
         var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=AIzaSyCUa7DrgBVZwYBVJOFrpjauc7DQ64h9D_Y";
-        document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>";
+        document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>" + "<br/> Searching for players... within a few miles";
     }
 
     function sendPosition(position){
