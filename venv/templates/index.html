@@ -8,8 +8,10 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 
+    <link rel="shortcut icon" href="/static/favicon.ico">
+
     <title>
-        S.A.D.
+        Secret Agent Descent
     </title>
   </head>
   <body>
@@ -41,21 +43,21 @@
         </div>
       </div>
 
-    <nav class="navbar navbar-toggleable-md navbar-dark bg-inverse">
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand " href="#">SAD</a>
+        <a class="navbar-brand " href="#">Secret Agent Descent</a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-            <a class="nav-link" href="/how-to-play">How to Play</a>
+            <a class="nav-link" href="#">How to Play</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link" href="/about-us">About Us</a>
+            <a class="nav-link" href="#">About Us</a>
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
@@ -76,7 +78,7 @@
     </style>
 
     <div class="container" style="width:100%; margin-left:0px; margin-right:0px;">
-        <div class="row align-items-center" style="padding-top:15px; background-color: grey; padding-bottom:15px">
+        <div class="row align-items-center" style="padding-top:15px; background-color: #C0C0C0; padding-bottom:15px">
             <!-- this is the header -->
             <div class="col-sm-1 no-padding " style="padding-left:0px; padding-right:0px;"></div>
             <div class="col-sm-2 no-padding" >
@@ -89,29 +91,23 @@
         </div>
 
         <div class="row align-items-center justify-content-center" style="margin-top:35px; margin-bottom:10px">
-            <div class="col">
 
-            </div>
-            <div class="col">
-                <button class="btn btn-danger btn-lg" onclick="create_game()">Create Game!</button>
-            </div>
-            <div class="col">
-                    <button class="btn-lg btn btn-danger" data-toggle="modal" data-target="#exampleModal">
-                        Join Game
-                    </button>
-            </div>
-            <div class="col">
-                <button class="btn  btn-lg btn-danger" onclick="getLan()">
-                    See Local Games
-                </button>
-            </div>
-            <div class="col">
-
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-group mr-2" role="group" aria-label="First group">
+                        <button type="button" class="btn-lg btn btn-danger" onclick="create_game()">Create Game</button>
+                    </div>
+                    <div class="btn-group mr-2" role="group" aria-label="Second group" data-toggle="modal" data-target="#exampleModal">
+                        <button type="button" class="btn-lg btn btn-danger">Join Game</button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="Third group">
+                        <button type="button" class="btn-lg btn btn-danger" onclick="getLan()">See Local Games</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="container" style="width: 100%; padding-top: 25px;">
+    <div class="container" style="width: 100%; padding-top: 25px; margin-bottom:40px;">
         <div class="row">
             <div class="col-sm-1">
 
@@ -120,38 +116,43 @@
                     <div class="card bg-faded">
                         <div class="card-block">
 
-                            <textarea class="more-padding form-control input-lg" id="game_url" type="text" readonly style="text-align: center;font-size:2em; resize: none;" rows="1"> No Game Created </textarea>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="game_url" value="No Game Created" readonly style="text-align: center;font-size:2em; resize: none;" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-danger btn-lg" onclick="copyURL()" type="button">Copy URL</button>
+                                </div>
+                            </div>
 
-                            <button class="more-padding btn btn-danger" onclick="copyURL()">
-                                Copy URL
-                            </button>
+                            <div class="container" style="width:100%; margin-left:0px; margin-right:0px;">
+                                <div class="row align-items-center">
+                                    Number of Players (1-100): <input class="more-padding form-control input-lg" id="num_people" type="text" style="width:60%; margin-left:15px; margin-right:15px" value="{{ default_people }}">
+                                    <!-- Make this a dropdown -->
+                                    Custom Location: No
+                                </div>
+                            </div>
 
-                            Number of People: <input class="more-padding form-control input-lg" id="num_people" type="text" value="{{ default_people }}">
-                            <!-- Make this a dropdown -->
-                            Custom Location: No
+                            <div class="container more-padding" style="width:100%; margin-left:0px; margin-right:0px;">
+                                <div class="row align-items-center">
+                                    Fancify Job Titles
+                                    <input type="checkbox" class="custom=control-input" style="margin-left:10px; margin-right:30px"/>
+                                    Location Picking
 
-                            <label class="more-padding custom-control custom-checkbox">
-                                <input type="checkbox" id="isFancy" class="custom-control-input">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Fancy</span>
-                            </label>
-
-                            Location Picking
-
-                            <!-- Example single danger button -->
-                            <div class="btn-group">
-                                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Random
-                                    </button>
-                                    <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Vote</a>
-                                    <a class="dropdown-item" href="#">Owner's Choice</a>
+                                    <!-- Example single danger button -->
+                                    <div class="btn-group">
+                                        <button type="button" style="margin-left:10px; margin-right:30px" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Random
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="#">Vote</a>
+                                            <a class="dropdown-item" href="#">Owner's Choice</a>
+                                        </div>
+                                        <input type="checkbox" class="custom=control-input" style="margin-right:10px" />
+                                        Time Limit
+                                        <input class="more-padding form-control input-lg" id="timeLimit" type="text" style="margin-left:10px; margin-right:30px">
+                                        <input class="more-padding form-control input-lg" id="password" type="password" />
                                     </div>
                                 </div>
-
-                            <input class="more-padding form-control input-lg" id="timeLimit" type="text">
-                            <input class="more-padding form-control input-lg" id="password" type="password" />
-
+                            </div>
                         </div>
                         </div>
             </div>
