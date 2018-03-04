@@ -69,6 +69,14 @@ def new_game():
     else:
         return json.dumps(["error", "Cannot Create More Games"])
 
+@app.route('/how-to-play')
+def how_to_play_f():
+    return render_template("how-to-play.html")
+
+@app.route('/about-us')
+def how_to_play():
+    return render_template("about-us.html")
+
 
 @app.route('/game/<id_num>')
 def join_game(id_num):
@@ -93,7 +101,7 @@ def join_game(id_num):
                            time=game.time_limit)
 
 @app.errorhandler(404)
-def page_not_found(description):
+def page_not_found(e, description):
     return render_template('404.html', desc=description)
 
 
@@ -243,13 +251,13 @@ class Game:
 
 @app.route('/gpsdata', methods=["POST"])
 def gpsdata():
-    ''' Gets GPS coordinates from the user, assigns an ID, and 
+    ''' Gets GPS coordinates from the user, assigns an ID, and
     appends to the list'''
     data = request.data
     playerID = getID()
     DATA.playerList[playerID] = {data}
     print(playerID)
-    session['playerID'] = playerID 
+    session['playerID'] = playerID
     #newDistEntry = updatePlayerMatrix(playerID)
     #DATA.distanceMatrix.append(newDistEntry)
     return "Player is in the database"
@@ -314,7 +322,7 @@ def distFromLats(lat1,lon1,lat2,lon2):
     dLon = degreesToRadians(lon2-lon1)
     lat1 = degreesToRadians(lat1)
     lat2 = degreesToRadians(lat2)
-    a = math.sin(dLat/2) * math.sin(dLat/2) + math.sin(dLon/2) * math.sin(dLon/2) * math.cos(lat1) * math.cos(lat2) 
+    a = math.sin(dLat/2) * math.sin(dLat/2) + math.sin(dLon/2) * math.sin(dLon/2) * math.cos(lat1) * math.cos(lat2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     return earthRadiusKm * c
 
