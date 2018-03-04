@@ -1,7 +1,24 @@
-<form action="/game/{{gameID}}" method="post">
-  {% if incorrect == True %}
-  Wrong password! Try again.
-  {% endif %}
-  Password: <input type="password" name="password" />
-  <input type="submit" />
-</form>
+{% extends "header.html" %}
+
+{% block head %}
+  <div class="container">
+    <div class="row" style="margin-top: 15px; padding-top: 15px;">
+        <form action="/game/{{gameID}}" method="post">
+          {% if incorrect == True %}
+            <h1 class="text-warning">
+              Wrong password! Try again.
+            </h1>
+          {% endif %}
+          <h1>
+            Enter the Secret Code
+          </h1>
+          <input type="password" name="password" />
+          <input class="btn btn-primary" type="submit" style="margin-left: 10px"/>
+        </form>
+    </div>
+  </div>
+{% endblock %}
+
+
+
+
