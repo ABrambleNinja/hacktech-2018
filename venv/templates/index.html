@@ -43,166 +43,174 @@
 
             </div>
         </div>
-            <div class="row align-items-center justify-content-center">
-              <div class="col-sm-6 center-block">
-                    <button class="btn btn-primary" onclick="create_game()">Create Game!</button>
-              </div>
-              <div class="col-sm-6 center-block">
-                    <a id="join_game_btn" onmousedown="join_game()" href="">
-                        <button class="btn btn-primary">
-                            Join Game
-                        </button>
-                    </a>
-              </div>
+        <div class="row align-items-center justify-content-center">
+            <div class="col-sm-6 center-block">
+                <button class="btn btn-primary" onclick="create_game()">Create Game!</button>
             </div>
-          </div>
+            <div class="col-sm-6 center-block">
+                <a id="join_game_btn" onmousedown="join_game()" href="">
+                    <button class="btn btn-primary">
+                        Join Game
+                    </button>
+                </a>
+            </div>
+            <button class="btn btn-primary" onclick="getLan()">
+                See Local Games
+            </button>
+        </div>
+    </div>
 
+    <div class="container">
+        Enter the ID here
+        <input class="form-control input-lg" type="text" id="game_num">
 
-        <br>
-        <input type="text" id="game_num">Enter the ID here</textarea>
-        <br>
-
-        <br>
-        <button class="btn btn-primary" onclick="getLan()">
-            See LAN Games
-        </button>
         <div id="lan results"></div>
-        <br>
-        <textarea id="game_url">
-            - No Game Created -
-        </textarea>
-        <br>
+
+            <input class="form-control input-lg" id="game_url" type="text" value="- No Game Created -">
+
         <button class="btn btn-primary" onclick="copyURL()">
             Copy URL
         </button>
-        <br>
-        <br>
-        Number of People: <input id="num_people" type="text" value="{{ default_people }}">
+
+        Number of People: <input class="form-control input-lg" id="num_people" type="text" value="{{ default_people }}">
         <!-- Make this a dropdown -->
         Custom Location: No
-        <br>
-        Fancy: <input id="isFancy" type="checkbox">
-        <br>
-        Location Picking:
-        <br>
-        Random:
-        <input id="r1" type="radio" name="locationPick" value="Random" checked>
-        <br>
-        Democratic
-        <input id="r2" type="radio" name="locationPick" value="Democratic">
-        <br>
-        Dictatorship
-        <input id="r3" type="radio" name="locationPick" value="Dictatorship">
-        <br>
-        Time Limit (Seconds)
-        <input type="checkbox" id="isTimeLimit">
-        <input id="timeLimit" type="text">
 
-        <script>
-                function create_game() {
-                    num_people = document.getElementById('num_people').value;
-                    isFancy = document.getElementById('isFancy').checked;
-                    if (document.getElementById('r1').checked ) {
-                        locationType = "random";
-                    } else if (document.getElementById('r2') ) {
-                        locationType = "democratic";
-                    } else if (document.getElementById('r3')) {
-                        locationType = "dictatorship";
-                    }
-                    isTimeLimit = document.getElementById('isTimeLimit').checked;
-                    timeLimit = document.getElementById('timeLimit').value;
-                    if (isTimeLimit == true) {
-                        var json_data = [num_people, isFancy, locationType, timeLimit];
-                    } else {
-                        var json_data = [num_people, isFancy, locationType, 0];
-                    }
-                    $.ajax({
-                        type : "POST",
-                        url : "newgame",
-                        data: JSON.stringify(json_data),
-                        dataType: 'json',
-                        contentType: 'application/json;charset=UTF-8',
-                        success: function(result) {
-                            $('#game_num').html(result);
-                            $('#game_url').html("secretagentdescent.com/game/" + result);
-                        }
-                    });
-                }
-                function join_game() {
-                    var game_id = document.getElementById("game_num").value;
-                    $('#join_game_btn').attr("href", "/game/" + game_id);
-                }
+        <label class="custom-control custom-checkbox">
+            <input type="checkbox" id="isFancy" class="custom-control-input">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description">Fancy</span>
+        </label>
 
-                function getLan() {
-                    $.ajax({
-                        type : "POST",
-                        url : "lanGames",
-                        success: function(result) {
-                            $('#lan results').html(results);
-                        }
-                    });
-                }
+        Location Picking
 
-                function copyURL() {
-                    var copyTextarea = document.querySelector('#game_url');
-                    copyTextarea.select();
-                    document.execCommand('copy');
-                }
-            </script>
-        </body>
+        <label class="custom-control custom-radio">
+                <input id="r1" name="locationPick" type="radio" class="custom-control-input" value="Random">
+                <span class="custom-control-indicator"></span>
+                <span class="custom-control-description">Random</span>
+            </label>
+        <label class="custom-control custom-radio">
+            <input id="r2" name="locationPick" type="radio" class="custom-control-input" value="Democratic">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description">Democratic</span>
+        </label>
+        <label class="custom-control custom-radio">
+            <input id="r3" name="locationPick" type="radio" class="custom-control-input">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description" value="Dictatorship">Dictatorship</span>
+        </label>
 
-        <script>
-            var x = document.getElementById("gps");
-            function getLocation() {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(showPosition);
-                    navigator.geolocation.getCurrentPosition(showMap);
-                    navigator.geolocation.getCurrentPosition(sendPosition);
-                    navigator.geolocation.getCurrentPosition(sendID);
+        <label class="custom-control custom-checkbox">
+            <input type="checkbox" id="isTimeLimit" class="custom-control-input">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description">Time Limit (Seconds)</span>
+        </label>
+
+        <input class="form-control input-lg" id="timeLimit" type="text">
+    </div>
+
+    <script>
+            function create_game() {
+                num_people = document.getElementById('num_people').value;
+                isFancy = document.getElementById('isFancy').checked;
+                if (document.getElementById('r1').checked ) {
+                    locationType = "random";
+                } else if (document.getElementById('r2') ) {
+                    locationType = "democratic";
+                } else if (document.getElementById('r3')) {
+                    locationType = "dictatorship";
+                }
+                isTimeLimit = document.getElementById('isTimeLimit').checked;
+                timeLimit = document.getElementById('timeLimit').value;
+                if (isTimeLimit == true) {
+                    var json_data = [num_people, isFancy, locationType, timeLimit];
                 } else {
-                    x.innerHTML = "Geolocation is not supported by this browser.";
+                    var json_data = [num_people, isFancy, locationType, 0];
                 }
+                $.ajax({
+                    type : "POST",
+                    url : "newgame",
+                    data: JSON.stringify(json_data),
+                    dataType: 'json',
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function(result) {
+                        $('#game_num').html(result);
+                        $('#game_url').html("secretagentdescent.com/game/" + result);
+                    }
+                });
             }
-            function showPosition(position) {
-                x.innerHTML = "Latitude: " + position.coords.latitude +
-                "<br>Longitude: " + position.coords.longitude;
+            function join_game() {
+                var game_id = document.getElementById("game_num").value;
+                $('#join_game_btn').attr("href", "/game/" + game_id);
             }
 
-            function showMap(position) {
-                var latlon = position.coords.latitude + "," + position.coords.longitude;
-                var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=AIzaSyCUa7DrgBVZwYBVJOFrpjauc7DQ64h9D_Y";
-                document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>" + "<br/> Searching for players within 10 miles";
-            }
-            function sendPosition(position){
-                var latlon = position.coords.latitude + "," + position.coords.longitude;
+            function getLan() {
                 $.ajax({
                     type : "POST",
-                    url : "http://127.0.0.1:5000/gpsdata",
-                    data: latlon,
-                    contentType: 'application/json;charset=UTF-8',
+                    url : "lanGames",
                     success: function(result) {
-                        console.log(result);
+                        $('#lan results').html(results);
                     }
-                }
-            );
-            console.log(position.coords.latitude);
-            console.log(position.coords.longitude)
+                });
             }
-            function sendID(position){
-                var userID = Math.floor(Math.random()*1000)
-                $.ajax({
-                    type : "POST",
-                    url : "http://127.0.0.1:5000/userID",
-                    data: JSON.stringify(userID),
-                    contentType: 'application/json;charset=UTF-8',
-                    success: function(result) {
-                        console.log(result);
-                    }
-                }
-            );
-            console.log(userID);
+
+            function copyURL() {
+                var copyTextarea = document.querySelector('#game_url');
+                copyTextarea.select();
+                document.execCommand('copy');
             }
-        </script>
+
+        var x = document.getElementById("gps");
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+                navigator.geolocation.getCurrentPosition(showMap);
+                navigator.geolocation.getCurrentPosition(sendPosition);
+                navigator.geolocation.getCurrentPosition(sendID);
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+        function showPosition(position) {
+            x.innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude;
+        }
+
+        function showMap(position) {
+            var latlon = position.coords.latitude + "," + position.coords.longitude;
+            var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=AIzaSyCUa7DrgBVZwYBVJOFrpjauc7DQ64h9D_Y";
+            document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>" + "<br/> Searching for players within 10 miles";
+        }
+        function sendPosition(position){
+            var latlon = position.coords.latitude + "," + position.coords.longitude;
+            $.ajax({
+                type : "POST",
+                url : "http://127.0.0.1:5000/gpsdata",
+                data: latlon,
+                contentType: 'application/json;charset=UTF-8',
+                success: function(result) {
+                    console.log(result);
+                }
+            }
+        );
+        console.log(position.coords.latitude);
+        console.log(position.coords.longitude)
+        }
+        function sendID(position){
+            var userID = Math.floor(Math.random()*1000)
+            $.ajax({
+                type : "POST",
+                url : "http://127.0.0.1:5000/userID",
+                data: JSON.stringify(userID),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(result) {
+                    console.log(result);
+                }
+            }
+        );
+        console.log(userID);
+        }
+    </script>
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
