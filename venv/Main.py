@@ -14,6 +14,10 @@ def index_page():
     return render_template('index.html', default_people=DATA.DEFAULT_SIZE)
 
 
+@app.route('/gameList')
+def gameList_page():
+    return render_template('gameList.html', filteredGames =DATA.filteredGames)
+ 
 @app.route('/checkGameOver', methods=["POST"])
 def check_game_over():
     ''' Given a game ID, checks if the spy was discovered or not based on
@@ -27,10 +31,11 @@ def check_game_over():
 def new_game():
     ''' Creates a new game '''
     # make new game
-
+    print('test1')
     # L[0] = numPlayers
     # L[1] = isFancy
     L = request.get_json()
+    print(L)
     isFancy = L[1]
     try:
         num_players = int(L[0])
@@ -73,7 +78,6 @@ def new_game():
 @app.route('/game/<id_num>')
 def join_game(id_num):
     ''' Connects user to existing game - if possible '''
-    print(id_num)
     try:
         id_num = int(id_num)
     except:
@@ -121,7 +125,7 @@ class Data:
         self.GAME_CAP = 10
         self.DEFAULT_SIZE = 5
         self.MAX_SIZE = 100
-
+        self.activePlayers = {}
         self.adjectives_list = []
         self.colors_list = []
         self.locations_dict = {}
@@ -131,6 +135,7 @@ class Data:
         self.playerList = {}
         self.playerID = 0
         self.MAX_PLAYER_ID = 10000
+        self.filteredGames = []
 
     def load_json_adjectives(self):
         ''' Loads all of the adjectives and colors from the external info.JSON
@@ -157,8 +162,7 @@ class Data:
 
 class Game:
     ''' Each game will be an instance of this object '''
-    def __init__(self, num_people, fancy=True,
-                 location_type="random", time_limit=0, location=None):
+    def __init__(self, num_people, fancy=True, location_type="random", time_limit=0, location=None):
         ''' Initializer for a new game '''
         self.num_people = num_people
         self.current_players = 0
@@ -192,6 +196,9 @@ class Game:
 
         session['gameid'] = gameid
         session['userid'] = self.current_players
+        if 'playerID' in session:
+            activePlayers[session['playerID']] = {session['gameid']}
+
 
         # When a new person joins a game, we need to increment the number of
         # people in the game, and then give them a role that is available
@@ -252,7 +259,26 @@ def gpsdata():
     newDistEntry = updatePlayerMatrix(playerID)
     DATA.distanceMatrix.append(newDistEntry)
     players = findUsersWithinXMiles(playerID,500)
-    return "Player is in the database"
+    activeUsers = filterIDs(players)
+    activeGames = findGames(activeUsers)
+    return "Player Database Updated"
+
+def findGames(users):
+    gameIDs = []
+    DATA.filteredGames = []
+    for i in range(len(users)):
+        tempGame = DATA.activePlayers[users[i]]
+        gameIDs.append(tempGame)
+        DATA.filteredGames.append(gameIDs[i])
+    return gameIDs
+
+
+def filterIDs(users):
+    activeUsers = []
+    for i in range(len(users)):
+        if users[i] in list(DATA.activePlayers.keys()):
+            activeUsers.append(users[i])
+    return activeUsers
 
 def getID():
     '''Takes the data variable playerID, assigns it to a user, and
@@ -373,4 +399,4 @@ if __name__ == "__main__":
     DATA.load_json_roles()
     DATA.debugging = debugging
 
-    app.run(host='0.0.0.0')
+    app.run(host='127.0.0.1')

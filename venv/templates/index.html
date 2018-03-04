@@ -154,15 +154,14 @@
                         </div>
             </div>
             <div class="col-sm-1">
-
+                    <p id="gps">Latitude: ??? <br/>
+                        Longitude: ???
+                    </p>
+                    <p id="mapholder">
+                            This is a placeholder for the badass goddamn map that will appear here
+                    </p>
             </div>
         </div>
-        <p id="gps">Latitude: ??? <br/>
-            Longitude: ???
-          </p>
-          <p id="mapholder">
-                This is a placeholder for the badass goddamn map that will appear here
-          </p>
     </div>
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
@@ -232,16 +231,17 @@
 
         var x = document.getElementById("gps");
         function getLocation() {
+            var x = document.getElementById("gps");
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition);
                 navigator.geolocation.getCurrentPosition(showMap);
                 navigator.geolocation.getCurrentPosition(sendPosition);
-                navigator.geolocation.getCurrentPosition(sendID);
             } else {
                 x.innerHTML = "Geolocation is not supported by this browser.";
             }
         }
         function showPosition(position) {
+            var x = document.getElementById("gps");
             x.innerHTML = "Latitude: " + position.coords.latitude +
             "<br>Longitude: " + position.coords.longitude;
         }
@@ -259,7 +259,7 @@
                 data: latlon,
                 contentType: 'application/json;charset=UTF-8',
                 success: function(result) {
-                    console.log(result);
+                    document.location.href = "/gameList";
                 }
             }
         );
@@ -270,5 +270,4 @@
 
 </script>
 </body>
-
 </html>
