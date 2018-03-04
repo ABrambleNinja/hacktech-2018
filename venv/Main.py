@@ -221,7 +221,7 @@ class Game:
                 self.current_players += 1
                 return ("Spy", "UNKNOWN")
             else:
-                role = self.available_roles[self.current_players]
+                role = self.available_roles[self.current_players % len(self.available_roles)]
                 if (self.fancy):
                     role = self.fancify_role(role)
                 self.player_dictionary[self.current_players] = [role, None]
