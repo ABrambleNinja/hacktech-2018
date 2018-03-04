@@ -1,23 +1,69 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        </title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    </head>
-    <body>
-        <div id="root"></div>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 
-        <button onclick="create_game()">Create Game!</button>
-        <br>
-        <textarea id="game_num">Enter the ID here</textarea>
-        <br>
-        <button>
-            <a id="join_game_btn" onmousedown="join_game()" href="">"Join Game"</a>
+    <title>
+        S.A.D.
+    </title>
+  </head>
+  <body>
+    <nav class="navbar navbar-toggleable-md navbar-dark bg-inverse">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
+        <a class="navbar-brand" href="#">SAD</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="#">How to Play</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="#">About Us</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
+        </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <!-- this is the header -->
+            <div class="col-sm">
+
+            </div>
+        </div>
+            <div class="row align-items-center justify-content-center">
+              <div class="col-sm-6 center-block">
+                    <button class="btn btn-primary" onclick="create_game()">Create Game!</button>
+              </div>
+              <div class="col-sm-6 center-block">
+                    <a id="join_game_btn" onmousedown="join_game()" href="">
+                        <button class="btn btn-primary">
+                            Join Game
+                        </button>
+                    </a>
+              </div>
+            </div>
+          </div>
+
+
         <br>
-        <button onclick="getLan()">
+        <input type="text" id="game_num">Enter the ID here</textarea>
+        <br>
+
+        <br>
+        <button class="btn btn-primary" onclick="getLan()">
             See LAN Games
         </button>
         <div id="lan results"></div>
@@ -26,7 +72,7 @@
             - No Game Created -
         </textarea>
         <br>
-        <button onclick="copyURL()">
+        <button class="btn btn-primary" onclick="copyURL()">
             Copy URL
         </button>
         <br>
@@ -52,112 +98,119 @@
         <input type="checkbox" id="isTimeLimit">
         <input id="timeLimit" type="text">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script>
+                function create_game() {
+                    num_people = document.getElementById('num_people').value;
+                    isFancy = document.getElementById('isFancy').checked;
+                    if (document.getElementById('r1').checked ) {
+                        locationType = "random";
+                    } else if (document.getElementById('r2') ) {
+                        locationType = "democratic";
+                    } else if (document.getElementById('r3')) {
+                        locationType = "dictatorship";
+                    }
+                    isTimeLimit = document.getElementById('isTimeLimit').checked;
+                    timeLimit = document.getElementById('timeLimit').value;
+                    if (isTimeLimit == true) {
+                        var json_data = [num_people, isFancy, locationType, timeLimit];
+                    } else {
+                        var json_data = [num_people, isFancy, locationType, 0];
+                    }
+                    $.ajax({
+                        type : "POST",
+                        url : "newgame",
+                        data: JSON.stringify(json_data),
+                        dataType: 'json',
+                        contentType: 'application/json;charset=UTF-8',
+                        success: function(result) {
+                            $('#game_num').html(result);
+                            $('#game_url').html("secretagentdescent.com/game/" + result);
+                        }
+                    });
+                }
+                function join_game() {
+                    var game_id = document.getElementById("game_num").value;
+                    $('#join_game_btn').attr("href", "/game/" + game_id);
+                }
+
+                function getLan() {
+                    $.ajax({
+                        type : "POST",
+                        url : "lanGames",
+                        success: function(result) {
+                            $('#lan results').html(results);
+                        }
+                    });
+                }
+
+                function copyURL() {
+                    var copyTextarea = document.querySelector('#game_url');
+                    copyTextarea.select();
+                    document.execCommand('copy');
+                }
+            </script>
+        </body>
 
         <script>
-            function create_game() {
-                num_people = document.getElementById('num_people').value;
-                isFancy = document.getElementById('isFancy').checked;
-                if (document.getElementById('r1').checked ) {
-                    locationType = "random";
-                } else if (document.getElementById('r2') ) {
-                    locationType = "democratic";
-                } else if (document.getElementById('r3')) {
-                    locationType = "dictatorship";
-                }
-                isTimeLimit = document.getElementById('isTimeLimit').checked;
-                timeLimit = document.getElementById('timeLimit').value;
-                if (isTimeLimit == true) {
-                    var json_data = [num_people, isFancy, locationType, timeLimit];
+            var x = document.getElementById("gps");
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                    navigator.geolocation.getCurrentPosition(showMap);
+                    navigator.geolocation.getCurrentPosition(sendPosition);
+                    navigator.geolocation.getCurrentPosition(sendID);
                 } else {
-                    var json_data = [num_people, isFancy, locationType, 0];
+                    x.innerHTML = "Geolocation is not supported by this browser.";
                 }
+            }
+            function showPosition(position) {
+                x.innerHTML = "Latitude: " + position.coords.latitude +
+                "<br>Longitude: " + position.coords.longitude;
+            }
+
+            function showMap(position) {
+                var latlon = position.coords.latitude + "," + position.coords.longitude;
+                var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=AIzaSyCUa7DrgBVZwYBVJOFrpjauc7DQ64h9D_Y";
+                document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>" + "<br/> Searching for players within 10 miles";
+            }
+            function sendPosition(position){
+                var latlon = position.coords.latitude + "," + position.coords.longitude;
                 $.ajax({
                     type : "POST",
-                    url : "newgame",
-                    data: JSON.stringify(json_data),
-                    dataType: 'json',
+                    url : "http://127.0.0.1:5000/gpsdata",
+                    data: latlon,
                     contentType: 'application/json;charset=UTF-8',
                     success: function(result) {
-                        $('#game_num').html(result);
-                        $('#game_url').html("secretagentdescent.com/game/" + result);
+                        console.log(result);
                     }
-                });
+                }
+            );
+            console.log(position.coords.latitude);
+            console.log(position.coords.longitude)
             }
-            function join_game() {
-                var game_id = document.getElementById("game_num").value;
-                $('#join_game_btn').attr("href", "/game/" + game_id);
-            }
-
-            function getLan() {
+            function sendID(position){
+                var userID = Math.floor(Math.random()*1000)
                 $.ajax({
                     type : "POST",
-                    url : "lanGames",
+                    url : "http://127.0.0.1:5000/userID",
+                    data: JSON.stringify(userID),
+                    contentType: 'application/json;charset=UTF-8',
                     success: function(result) {
-                        $('#lan results').html(results);
+                        console.log(result);
                     }
-                });
-            }
-
-            function copyURL() {
-                var copyTextarea = document.querySelector('#game_url');
-                copyTextarea.select();
-                document.execCommand('copy');
+                }
+            );
+            console.log(userID);
             }
         </script>
-    </body>
 
-    <script>
-        var x = document.getElementById("gps");
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-                navigator.geolocation.getCurrentPosition(showMap);
-                navigator.geolocation.getCurrentPosition(sendPosition);
-                navigator.geolocation.getCurrentPosition(sendID);
-            } else {
-                x.innerHTML = "Geolocation is not supported by this browser.";
-            }
-        }
-        function showPosition(position) {
-            x.innerHTML = "Latitude: " + position.coords.latitude +
-            "<br>Longitude: " + position.coords.longitude;
-        }
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
-        function showMap(position) {
-            var latlon = position.coords.latitude + "," + position.coords.longitude;
-            var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=AIzaSyCUa7DrgBVZwYBVJOFrpjauc7DQ64h9D_Y";
-            document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>" + "<br/> Searching for players within 10 miles";
-        }
-        function sendPosition(position){
-            var latlon = position.coords.latitude + "," + position.coords.longitude;
-            $.ajax({
-                type : "POST",
-                url : "http://127.0.0.1:5000/gpsdata",
-                data: latlon,
-                contentType: 'application/json;charset=UTF-8',
-                success: function(result) {
-                    console.log(result);
-                }
-            }
-        );
-        console.log(position.coords.latitude);
-        console.log(position.coords.longitude)
-        }
-        function sendID(position){
-            var userID = Math.floor(Math.random()*1000)
-            $.ajax({
-                type : "POST",
-                url : "http://127.0.0.1:5000/userID",
-                data: JSON.stringify(userID),
-                contentType: 'application/json;charset=UTF-8',
-                success: function(result) {
-                    console.log(result);
-                }
-            }
-        );
-        console.log(userID);
-        }
-    </script>
-    <script src="/static/main.js"></script>
+
+</body>
+
 </html>
+<!-- -->
