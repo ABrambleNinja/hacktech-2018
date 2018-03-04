@@ -179,11 +179,12 @@
                     contentType: 'application/json;charset=UTF-8',
                     success: function(result) {
                         if (result[0] == "error") {
-                            $('#game_num').html(result[1]);
-                            $('#game_url').html("");
+                            // $('#game_num').html(result[1]);
+                            $('#game_url').attr("value", "");
                         } else {
-                            $('#game_num').html(result[1]);
-                            $('#game_url').html("secretagentdescent.com/game/" + result[1]);
+                            // $('#game_num').html(result[1]);
+                            console.log('game')
+                            $('#game_url').attr("value", "secretagentdescent.com/game/" + result[1]);
                         }
 
 
