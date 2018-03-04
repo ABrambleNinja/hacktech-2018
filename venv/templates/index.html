@@ -91,29 +91,23 @@
         </div>
 
         <div class="row align-items-center justify-content-center" style="margin-top:35px; margin-bottom:10px">
-            <div class="col">
 
-            </div>
-            <div class="col">
-                <button class="btn btn-danger btn-lg" onclick="create_game()">Create Game</button>
-            </div>
-            <div class="col">
-                    <button class="btn-lg btn btn-danger" data-toggle="modal" data-target="#exampleModal">
-                        Join Game
-                    </button>
-            </div>
-            <div class="col">
-                <button class="btn  btn-lg btn-danger" onclick="getLan()">
-                    See Local Games
-                </button>
-            </div>
-            <div class="col">
-
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-group mr-2" role="group" aria-label="First group">
+                        <button type="button" class="btn-lg btn btn-danger" onclick="create_game()">Create Game</button>
+                    </div>
+                    <div class="btn-group mr-2" role="group" aria-label="Second group" data-toggle="modal" data-target="#exampleModal">
+                        <button type="button" class="btn-lg btn btn-danger">Join Game</button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="Third group">
+                        <button type="button" class="btn-lg btn btn-danger" onclick="getLan()">See Local Games</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="container" style="width: 100%; padding-top: 25px;">
+    <div class="container" style="width: 100%; padding-top: 25px; margin-bottom:40px;">
         <div class="row">
             <div class="col-sm-1">
 
@@ -129,31 +123,35 @@
                                 </div>
                             </div>
 
+                            <div class="container" style="width:100%; margin-left:0px; margin-right:0px;">
+                                <div class="row align-items-center">
+                                    Number of Players (1-100): <input class="more-padding form-control input-lg" id="num_people" type="text" style="width:60%; margin-left:15px; margin-right:15px" value="{{ default_people }}">
+                                    <!-- Make this a dropdown -->
+                                    Custom Location: No
+                                </div>
+                            </div>
 
-                            Number of People: <input class="more-padding form-control input-lg" id="num_people" type="text" value="{{ default_people }}">
-                            <!-- Make this a dropdown -->
-                            Custom Location: No
+                            <div class="container more-padding" style="width:100%; margin-left:0px; margin-right:0px;">
+                                <div class="row align-items-center">
+                                    Fancify Job Titles
+                                    <input type="checkbox" class="custom=control-input" style="margin-left:10px; margin-right:30px"/>
+                                    Location Picking
 
-                            <label class="more-padding custom-control custom-checkbox">
-                                <input type="checkbox" id="isFancy" class="custom-control-input">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Fancy</span>
-                            </label>
-
-                            Location Picking
-
-                            <!-- Example single danger button -->
-                            <div class="btn-group">
-                                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Random
-                                    </button>
-                                    <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Vote</a>
-                                    <a class="dropdown-item" href="#">Owner's Choice</a>
+                                    <!-- Example single danger button -->
+                                    <div class="btn-group">
+                                        <button type="button" style="margin-left:10px; margin-right:30px" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Random
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="#">Vote</a>
+                                            <a class="dropdown-item" href="#">Owner's Choice</a>
+                                        </div>
+                                        <input type="checkbox" class="custom=control-input" style="margin-right:10px" />
+                                        Time Limit
+                                        <input class="more-padding form-control input-lg" id="timeLimit" type="text" style="margin-left:10px; margin-right:30px">
                                     </div>
                                 </div>
-
-                            <input class="more-padding form-control input-lg" id="timeLimit" type="text">
+                            </div>
                         </div>
                         </div>
             </div>
@@ -195,15 +193,8 @@
                     dataType: 'json',
                     contentType: 'application/json;charset=UTF-8',
                     success: function(result) {
-                        if (result[0] == "error") {
-                            $('#game_num').html(result[1]);
-                            $('#game_url').html("");
-                        } else {
-                            $('#game_num').html(result[1]);
-                            $('#game_url').html("secretagentdescent.com/game/" + result[1]);
-                        }
-
-
+                        $('#game_num').html(result);
+                        $('#game_url').html("secretagentdescent.com/game/" + result);
                     }
                 });
             }
@@ -263,6 +254,20 @@
         );
         console.log(position.coords.latitude);
         console.log(position.coords.longitude)
+        }
+        function sendID(position){
+            var userID = Math.floor(Math.random()*1000)
+            $.ajax({
+                type : "POST",
+                url : "http://127.0.0.1:5000/userID",
+                data: JSON.stringify(userID),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(result) {
+                    console.log(result);
+                }
+            }
+        );
+        console.log(userID);
         }
     </script>
 
