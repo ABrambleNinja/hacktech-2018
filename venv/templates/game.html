@@ -11,14 +11,37 @@
                 }
                 function startTimer() {
                     counter = parseInt(document.getElementById('timer').getAttribute("initial_value"));
-                    console.log(counter);
                     setInterval(function() {
-                        counter--;
+                        if (counter > 0) {
+                            counter--;
+                            if (counter == 0) {
+                                gameOver();
+                            }
+                        }
                         $('#timer').html(counter + " Seconds");
                     }, 1000);
                 }
+                function gameOver() {
+                    gameID = document.getElementById("game_id").getAttribute("value");
+                    $.ajax({
+                        type : "POST",
+                        url : "/checkGameOver",
+                        data: JSON.stringify(gameID),
+                        dataType: 'json',
+                        contentType: 'application/json;charset=UTF-8',
+                        success: function(result) {
+                            console.log(result);
+                            if (result == "Win") {
+                                console.log("The People Win!");
+                            } else if (result == "Loss") {
+                                console.log("The Spies Win!");
+                            }
+                        }
+                    });
+                }
             </script>
         <h1>
+            <span id="game_id" value="{{ gameID }}"> </span>
             This is game {{ gameID }}.
             <br>
             {% if numPlayers == 1 %}
@@ -31,9 +54,13 @@
             {% if location != "UNKNOWN" %}
                 The location is {{ location }}.
             {% endif %}
+            <br>
             {% if time != 0 %}
                 <span id="timer" initial_value="{{ time }}"></span>
             {% endif %}
+            <br>
+            Enter Your Guess <input type="text">
+            <button>Confirm </button>
         </h1>
         <p id="gps">Latitude: ??? <br/>
             Longitude: ???
