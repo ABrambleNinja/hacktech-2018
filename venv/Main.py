@@ -92,31 +92,6 @@ def join_game(id_num):
                            location=location,
                            time=game.time_limit)
 
-@app.route('/gpsdata', methods=["POST"])
-def gpsdata():
-   ''' Gets GPS coordinates from the user, assigns an ID, and appends to the list'''
-    data = request.data
-    playerID = getID()
-    DATA.playerList[playerID] = {data}
-    print(playerID)
-    session['playerID'] = playerID
-    return "Player is in the database"
-
-def getID():
-    '''Takes the global variable playerID, assigns it to a user, and
-       then increments by 1 to give the player a unique id'''
-    playerID = DATA.playerID
-    if 'playerID' in session:
-        return (session['playerID'])
-    DATA.playerID += 1
-    return playerID
-
-def calculateDist(userID,userID2):
-    '''Finds all the locations in the list that are within x miles of
-     user. Uses the formula from '''
-    
-    pass
-  
 @app.errorhandler(404)
 def page_not_found(description):
     return render_template('404.html', desc=description)
@@ -150,6 +125,8 @@ class Data:
         self.adjectives_list = []
         self.colors_list = []
         self.locations_dict = {}
+        self.distanceMatrix = []
+        self.numPlayers = 0
         self.games = []
         self.playerList = {}
         self.playerID = 0
@@ -264,58 +241,6 @@ class Game:
         for player_id, player_tuple in self.player_dictionary:
             timesAccused[player_tuple[1]] += 1
 
-@app.route('/newgame', methods=["POST"])
-def new_game():
-    ''' Creates a new game '''
-    # make new game
-    L = request.get_json()
-    isFancy = L[1]
-    try:
-        num_players = int(L[0])
-    except:
-        num_players = DATA.DEFAULT_SIZE
-
-    location_type = L[2]
-    time_limit = L[3]
-
-    if (len(DATA.games) < DATA.GAME_CAP):
-        # Initialize the game
-        newGame = Game(num_players, isFancy, location_type, time_limit)
-        # Find new game location (available ID)
-        indexValue = Game.next_game_id()
-
-        # Add the game in the right ID location
-        if indexValue is None:
-            # If indexValue is None, we must add more slots
-            DATA.games.append(newGame)
-            indexValue = len(DATA.games) - 1
-        else:
-            # Otherwise, we can add it to the regular location
-            DATA.games[indexValue] = newGame
-
-        # Return the ID of the game to the player (to get URL)
-        return json.dumps(indexValue)
-    else:
-        return json.dumps("Cannot Create More Games")
-
-
-@app.route('/game/<int:id_num>')
-def join_game(id_num):
-    ''' Connects user to existing game - if possible '''
-    if (id_num >= len(DATA.games) or (DATA.games[id_num] is None)):
-        abort(404, description="Not a Valid Game")
-    else:
-        game = DATA.games[int(id_num)]
-        role, location = game.join_game(int(id_num))
-
-    return render_template("game.html", gameID=id_num,
-                           numPlayers=game.current_players,
-                           role=role,
-                           maxPlayers=game.num_people,
-                           location=location,
-                           time=game.time_limit)
-
-
 @app.route('/gpsdata', methods=["POST"])
 def gpsdata():
     ''' Gets GPS coordinates from the user, assigns an ID, and 
@@ -324,8 +249,9 @@ def gpsdata():
     playerID = getID()
     DATA.playerList[playerID] = {data}
     print(playerID)
-    print(DATA.playerList[playerID])
-    session['playerID'] = playerID
+    session['playerID'] = playerID 
+    #newDistEntry = updatePlayerMatrix(playerID)
+    #DATA.distanceMatrix.append(newDistEntry)
     return "Player is in the database"
 
 def getID():
@@ -335,8 +261,29 @@ def getID():
     if 'playerID' in session:
         return (session['playerID'])
     DATA.playerID += 1
+    updateNumPlayers()
     return playerID
 
+def updateNumPlayers():
+    DATA.numPlayers = len(DATA.playerList.keys())
+    return
+
+''' def updatePlayerMatrix(playerID):
+    keyList = list(DATA.playerList.keys())
+    print(keyList)
+    if len(keyList) == 1:
+        keyList = []
+    else:
+        keyList.remove(playerID)
+    print(keyList)
+    if len(keyList) <= 0:
+        return
+    newPlayerMatrix = []
+    for i in range (DATA.numPlayers):
+        print(i)
+        newPlayerMatrix[i] = calculateDist(playerID,keyList[i])
+    return newPlayerMatrix
+ '''
 def calculateDist(userID1,userID2):
     '''Finds all the locations in the list that are within x miles of
      user. Uses the formula from '''
