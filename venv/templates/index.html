@@ -4,10 +4,9 @@
         <title>
 
         </title>
-        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     </head>
     <body>
-
         <div id="root"></div>
 
         <button onclick="create_game()">Create Game!</button>
@@ -54,7 +53,7 @@
         <input id="timeLimit" type="text">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-        <script src="/static/js/main.js"></script>
+
         <script>
             function create_game() {
                 num_people = document.getElementById('num_people').value;
@@ -107,7 +106,7 @@
             }
         </script>
     </body>
-    
+
     <script>
         var x = document.getElementById("gps");
         function getLocation() {
@@ -160,4 +159,5 @@
         console.log(userID);
         }
     </script>
+    <script src="/static/main.js"></script>
 </html>
