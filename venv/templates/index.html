@@ -1,7 +1,6 @@
 {% extends "header.html" %}
 
 {% block head %}
-    </button>
 
       <!-- Modal -->
       <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -21,7 +20,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary"               data-dismiss="modal">Close</button>
                 <a id="join_game_btn" onmousedown="join_game();" href=" ">
-                    <button type="button" class="btn btn-success">GO!</button>
+                    <button type="button" class="btn btn-danger">GO!</button>
                 </a>
             </div>
           </div>
@@ -78,7 +77,7 @@
             <div class="col-sm-10">
                     <div class="card bg-faded">
                         <div class="card-block">
-
+                            
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" id="game_url" value="No Game Created" readonly style="text-align: center;font-size:2em; resize: none;" aria-describedby="basic-addon2">
                                 <div class="input-group-append">
@@ -86,44 +85,65 @@
                                 </div>
                             </div>
 
-                            <div class="container" style="width:100%; margin-left:0px; margin-right:0px;">
-                                <div class="row align-items-center">
-                                    Number of Players (1-100): <input class="more-padding form-control input-lg" id="num_people" type="text" style="width:60%; margin-left:15px; margin-right:15px" value="{{ default_people }}">
-                                    <!-- Make this a dropdown -->
-                                    Custom Location: No
+                            <div class="d-flex justify-content-center flex-wrap">
+
+                                <div class="p-2">
+                                    <div class="card bg-faded" style="padding:10px; background-color:#E0E0E0;">
+                                        Number of Players (1-100):
+                                        <input class="more-padding form-control input-lg" id="num_people" type="text" value="{{ default_people }}">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="container more-padding" style="width:100%; margin-left:0px; margin-right:0px;">
-                                <div class="row align-items-center">
-                                    Fancify Job Titles
-                                    <input type="checkbox" class="custom=control-input" style="margin-left:10px; margin-right:30px" id="isFancy"/>
-                                    Location Picking
+                                <div class="p-2">
+                                    <div class="card bg-faded" style="padding:10px; background-color:#E0E0E0;">
+                                        Custom Location: No
+                                    </div>
+                                </div>
 
-                                    <!-- Example single danger button -->
-                                    <div class="btn-group">
-                                        <button type="button" style="margin-left:10px; margin-right:30px" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Random
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="#">Vote</a>
-                                            <a class="dropdown-item" href="#">Owner's Choice</a>
+                                <div class="p-2">
+                                    <div class="card bg-faded" style="padding:10px; background-color:#E0E0E0;">
+                                        <input type="checkbox" class="custom=control-input" id="isFancy" />
+                                        Fancify Job Titles
+                                    </div>
+                                </div>
+
+                                <div class="p-2">
+                                    <div class="card bg-faded" style="padding:10px; background-color:#E0E0E0;">
+                                        Location Picking
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Random
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="#">Vote</a>
+                                                <a class="dropdown-item" href="#">Owner's Choice</a>
+                                            </div>
                                         </div>
-                                        <input type="checkbox" class="custom=control-input" style="margin-right:10px" />
+                                    </div>
+                                </div>
+
+                                <div class="p-2">
+                                    <div class="card bg-faded" style="padding:10px; background-color:#E0E0E0;">
+                                        <input type="checkbox" class="custom=control-input" />
                                         Time Limit
-                                        <input class="more-padding form-control input-lg" id="timeLimit" type="text" style="margin-left:10px; margin-right:30px">
+                                        <input class="more-padding form-control input-lg" id="timeLimit" type="text">
+                                    </div>
+                                </div>
+
+                                <div class="p-2">
+                                    <div class="card bg-faded" style="padding:10px; background-color:#E0E0E0;">
+                                        Password:
                                         <input class="more-padding form-control input-lg" id="password" type="password" />
                                     </div>
                                 </div>
+
                             </div>
                         </div>
-                        </div>
-            </div>
-            <div class="col-sm-1">
-
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+ 
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
