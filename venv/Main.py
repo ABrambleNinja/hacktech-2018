@@ -206,11 +206,10 @@ def gpsdata():
     print(playerID)
     print(DATA.playerList[playerID])
     session['playerID'] = playerID
-    calculateDist(4,5)
     return "Player is in the database"
 
 def getID():
-    '''Takes the global variable playerID, assigns it to a user, and
+    '''Takes the data variable playerID, assigns it to a user, and
        then increments by 1 to give the player a unique id'''
     playerID = DATA.playerID
     if 'playerID' in session:
@@ -221,6 +220,8 @@ def getID():
 def calculateDist(userID1,userID2):
     '''Finds all the locations in the list that are within x miles of
      user. Uses the formula from '''
+    # the data associated with a user ID is a weird set, this extracts
+    # the actual coordinates
     csv1 = str(DATA.playerList[userID1])[3:-2]
     csv2 = str(DATA.playerList[userID2])[3:-2]
     gps1 = csv1.split(',')
@@ -236,9 +237,11 @@ def calculateDist(userID1,userID2):
     return distance
 
 def degreesToRadians(degrees):
-  return degrees * 3.14159265 / 180
+    '''degrees --> radians '''
+    return degrees * 3.14159265 / 180
 
 def distFromLats(lat1,lon1,lat2,lon2):
+    '''formula for calculating distance between spherical coordinates, outputs distance'''
     earthRadiusKm = 6371
     dLat = degreesToRadians(lat2-lat1)
     dLon = degreesToRadians(lon2-lon1)
