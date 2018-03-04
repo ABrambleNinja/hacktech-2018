@@ -1,21 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends "header.html" %}
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-
-    <link rel="shortcut icon" href="/static/favicon.ico">
-
-    <title>
-        Secret Agent Descent
-    </title>
-  </head>
-  <body>
-
+{% block head %}
     </button>
 
       <!-- Modal -->
@@ -43,28 +28,6 @@
         </div>
       </div>
 
-    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <a class="navbar-brand " href="#">Secret Agent Descent</a>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="#">How to Play</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="#">About Us</a>
-            </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
-        </form>
-        </div>
-    </nav>
 
     <style>
         .no-padding {
@@ -134,7 +97,7 @@
                             <div class="container more-padding" style="width:100%; margin-left:0px; margin-right:0px;">
                                 <div class="row align-items-center">
                                     Fancify Job Titles
-                                    <input type="checkbox" class="custom=control-input" style="margin-left:10px; margin-right:30px"/>
+                                    <input type="checkbox" class="custom=control-input" style="margin-left:10px; margin-right:30px" id="isFancy"/>
                                     Location Picking
 
                                     <!-- Example single danger button -->
@@ -172,7 +135,7 @@
                 num_people = document.getElementById('num_people').value;
                 isFancy = document.getElementById('isFancy').checked;
                 //if (document.getElementById('r1').checked ) {
-                    locationType = "random";
+                locationType = "random";
                 /*} else if (document.getElementById('r2') ) {
                     locationType = "democratic";
                 } else if (document.getElementById('r3')) {
@@ -266,6 +229,6 @@
         }
     </script>
 
-</body>
-
 </html>
+
+{% endblock %}
