@@ -17,7 +17,7 @@
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="#">SAD</a>
+        <a class="navbar-brand " href="#">SAD</a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
@@ -36,14 +36,23 @@
         </div>
     </nav>
 
-    <div class="container">
-        <div class="row">
+    <div class="container" style="width:100%; margin-left:0px; margin-right:0px;">
+        <div class="row" style="padding-top:15px; background-color: grey; padding-bottom:15px">
             <!-- this is the header -->
-            <div class="col-sm">
-
+            <div class="col-sm-2" style="padding-left:0px; padding-right:0px;"></div>
+            <div class="col-sm-2" >
+                <img src="\static\icon.png" style="width:100%"></img>
+            </div>
+            <div class="col-sm-8" class="justify-content-center;">
+                <p style="text-align:center; font-size: 5em">
+                    Secret Agent
+                </p>
+                <h2 style="text-align:center; font-size: 2.7em">
+                    Descent
+                </h2>
             </div>
         </div>
-        <div class="row align-items-center justify-content-center">
+        <div class="row align-items-center justify-content-center" style="margin-top:25px;">
             <div class="col-sm-6 center-block">
                 <button class="btn btn-primary" onclick="create_game()">Create Game!</button>
             </div>
