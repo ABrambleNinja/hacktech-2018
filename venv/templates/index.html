@@ -13,6 +13,34 @@
     </title>
   </head>
   <body>
+
+    </button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+
+              <h5 class="modal-title" id="exampleModalLabel">Enter the Game ID</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+
+                <input class="form-control input-lg" type="text" id="game_num">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"               data-dismiss="modal">Close</button>
+                <a id="join_game_btn" onmousedown="join_game();" href=" ">
+                    <button type="button" class="btn btn-success">GO!</button>
+                </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
     <nav class="navbar navbar-toggleable-md navbar-dark bg-inverse">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -36,87 +64,104 @@
         </div>
     </nav>
 
+    <style>
+        .no-padding {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .more-padding {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+
     <div class="container" style="width:100%; margin-left:0px; margin-right:0px;">
-        <div class="row" style="padding-top:15px; background-color: grey; padding-bottom:15px">
+        <div class="row align-items-center" style="padding-top:15px; background-color: grey; padding-bottom:15px">
             <!-- this is the header -->
-            <div class="col-sm-2" style="padding-left:0px; padding-right:0px;"></div>
-            <div class="col-sm-2" >
+            <div class="col-sm-1 no-padding " style="padding-left:0px; padding-right:0px;"></div>
+            <div class="col-sm-2 no-padding" >
                 <img src="\static\icon.png" style="width:100%"></img>
             </div>
-            <div class="col-sm-8" class="justify-content-center;">
-                <p style="text-align:center; font-size: 5em">
-                    Secret Agent
-                </p>
-                <h2 style="text-align:center; font-size: 2.7em">
-                    Descent
-                </h2>
-            </div>
+            <div class="col-sm-9 no-padding " class="justify-content-center;
+            "><center>
+                <img src="\static\title.png" style="width:65%"></img>
+            </center></div>
         </div>
-        <div class="row align-items-center justify-content-center" style="margin-top:25px;">
-            <div class="col-sm-6 center-block">
-                <button class="btn btn-primary" onclick="create_game()">Create Game!</button>
+
+        <div class="row align-items-center justify-content-center" style="margin-top:35px; margin-bottom:10px">
+            <div class="col">
+
             </div>
-            <div class="col-sm-6 center-block">
-                <a id="join_game_btn" onmousedown="join_game()" href="">
-                    <button class="btn btn-primary">
+            <div class="col">
+                <button class="btn btn-danger btn-lg" onclick="create_game()">Create Game!</button>
+            </div>
+            <div class="col">
+                    <button class="btn-lg btn btn-danger" data-toggle="modal" data-target="#exampleModal">
                         Join Game
                     </button>
-                </a>
             </div>
-            <button class="btn btn-primary" onclick="getLan()">
-                See Local Games
-            </button>
+            <div class="col">
+                <button class="btn  btn-lg btn-danger" onclick="getLan()">
+                    See Local Games
+                </button>
+            </div>
+            <div class="col">
+
+            </div>
         </div>
     </div>
 
-    <div class="container">
-        Enter the ID here
-        <input class="form-control input-lg" type="text" id="game_num">
+    <div class="container" style="width: 100%; padding-top: 25px;">
+        <div class="row">
+            <div class="col-sm-1">
 
-        <div id="lan results"></div>
+            </div>
+            <div class="col-sm-10">
+                    <div class="card bg-faded">
+                        <div class="card-block">
+                            <textarea class="more-padding form-control input-lg" id="game_url" type="text" readonly style="text-align: center;font-size:2em; resize: none;" rows="1"> No Game Created </textarea>
 
-            <input class="form-control input-lg" id="game_url" type="text" value="- No Game Created -">
+                            <button class="more-padding btn btn-danger" onclick="copyURL()">
+                                Copy URL
+                            </button>
 
-        <button class="btn btn-primary" onclick="copyURL()">
-            Copy URL
-        </button>
+                            Number of People: <input class="more-padding form-control input-lg" id="num_people" type="text" value="{{ default_people }}">
+                            <!-- Make this a dropdown -->
+                            Custom Location: No
 
-        Number of People: <input class="form-control input-lg" id="num_people" type="text" value="{{ default_people }}">
-        <!-- Make this a dropdown -->
-        Custom Location: No
+                            <label class="more-padding custom-control custom-checkbox">
+                                <input type="checkbox" id="isFancy" class="custom-control-input">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Fancy</span>
+                            </label>
 
-        <label class="custom-control custom-checkbox">
-            <input type="checkbox" id="isFancy" class="custom-control-input">
-            <span class="custom-control-indicator"></span>
-            <span class="custom-control-description">Fancy</span>
-        </label>
+                            Location Picking
 
-        Location Picking
+                            <!-- Example single danger button -->
+                            <div class="btn-group">
+                                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Random
+                                    </button>
+                                    <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Vote</a>
+                                    <a class="dropdown-item" href="#">Owner's Choice</a>
+                                    </div>
+                                </div>
 
-        <label class="custom-control custom-radio">
-                <input id="r1" name="locationPick" type="radio" class="custom-control-input" value="Random">
-                <span class="custom-control-indicator"></span>
-                <span class="custom-control-description">Random</span>
-            </label>
-        <label class="custom-control custom-radio">
-            <input id="r2" name="locationPick" type="radio" class="custom-control-input" value="Democratic">
-            <span class="custom-control-indicator"></span>
-            <span class="custom-control-description">Democratic</span>
-        </label>
-        <label class="custom-control custom-radio">
-            <input id="r3" name="locationPick" type="radio" class="custom-control-input">
-            <span class="custom-control-indicator"></span>
-            <span class="custom-control-description" value="Dictatorship">Dictatorship</span>
-        </label>
+                            <input class="more-padding form-control input-lg" id="timeLimit" type="text">
+                        </div>
+                        </div>
+            </div>
+            <div class="col-sm-1">
 
-        <label class="custom-control custom-checkbox">
-            <input type="checkbox" id="isTimeLimit" class="custom-control-input">
-            <span class="custom-control-indicator"></span>
-            <span class="custom-control-description">Time Limit (Seconds)</span>
-        </label>
-
-        <input class="form-control input-lg" id="timeLimit" type="text">
+            </div>
+        </div>
     </div>
+
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
     <script>
             function create_game() {
@@ -220,12 +265,6 @@
         console.log(userID);
         }
     </script>
-
-    <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-
 
 </body>
 
