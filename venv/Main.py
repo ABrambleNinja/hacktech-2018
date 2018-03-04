@@ -46,12 +46,16 @@ def new_game():
     elif time_limit < 0:
         return json.dumps(["error", "Time must be positive."])
 
+    password = L[4]
+    if password == "":
+        password = None
+
     if (len(DATA.games) < DATA.GAME_CAP):
         if num_players > DATA.MAX_SIZE:
             num_players = DATA.MAX_SIZE
         # Initialize the game
         newGame = Game(num_players, isFancy, location_type,
-                       time_limit, get_location())
+                       time_limit, get_location(), password)
         # Find new game location (available ID)
         indexValue = DATA.next_game_id()
 
@@ -70,7 +74,7 @@ def new_game():
         return json.dumps(["error", "Cannot Create More Games"])
 
 
-@app.route('/game/<id_num>')
+@app.route('/game/<id_num>', methods = ["GET", "POST"])
 def join_game(id_num):
     ''' Connects user to existing game - if possible '''
     print(id_num)
@@ -85,12 +89,19 @@ def join_game(id_num):
         game = DATA.games[int(id_num)]
         role, location = game.join_game(int(id_num))
 
+    if game.password != None:
+        if request.method == "GET":
+            return render_template("login.html", gameID=id_num, incorrect=False)
+        elif request.form["password"] != game.password:
+            return render_template("login.html", gameID=id_num, incorrect=True)
+
     return render_template("game.html", gameID=id_num,
                            numPlayers=game.current_players,
                            role=role,
                            maxPlayers=game.num_people,
                            location=location,
-                           time=game.time_limit)
+                           time=game.time_limit, passw=game.password)
+
 
 @app.errorhandler(404)
 def page_not_found(description):
@@ -158,7 +169,7 @@ class Data:
 class Game:
     ''' Each game will be an instance of this object '''
     def __init__(self, num_people, fancy=True,
-                 location_type="random", time_limit=0, location=None):
+                 location_type="random", time_limit=0, location=None, password=None):
         ''' Initializer for a new game '''
         self.num_people = num_people
         self.current_players = 0
@@ -167,6 +178,7 @@ class Game:
         self.available_roles = DATA.locations_dict[self.location]
         self.player_dictionary = {}
         self.fancy = fancy
+        self.password = password
         # TODO: add support for more than one spy, and allow user to put
         #  in how many spies they would like to have
         self.num_spies = 0
@@ -243,13 +255,13 @@ class Game:
 
 @app.route('/gpsdata', methods=["POST"])
 def gpsdata():
-    ''' Gets GPS coordinates from the user, assigns an ID, and 
+    ''' Gets GPS coordinates from the user, assigns an ID, and
     appends to the list'''
     data = request.data
     playerID = getID()
     DATA.playerList[playerID] = {data}
     print(playerID)
-    session['playerID'] = playerID 
+    session['playerID'] = playerID
     #newDistEntry = updatePlayerMatrix(playerID)
     #DATA.distanceMatrix.append(newDistEntry)
     return "Player is in the database"
@@ -314,7 +326,7 @@ def distFromLats(lat1,lon1,lat2,lon2):
     dLon = degreesToRadians(lon2-lon1)
     lat1 = degreesToRadians(lat1)
     lat2 = degreesToRadians(lat2)
-    a = math.sin(dLat/2) * math.sin(dLat/2) + math.sin(dLon/2) * math.sin(dLon/2) * math.cos(lat1) * math.cos(lat2) 
+    a = math.sin(dLat/2) * math.sin(dLat/2) + math.sin(dLon/2) * math.sin(dLon/2) * math.cos(lat1) * math.cos(lat2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     return earthRadiusKm * c
 

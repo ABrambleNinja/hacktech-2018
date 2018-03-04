@@ -1,0 +1,7 @@
+<form action="/game/{{gameID}}" method="post">
+  {% if incorrect == True %}
+  Wrong password! Try again.
+  {% endif %}
+  Password: <input type="password" name="password" />
+  <input type="submit" />
+</form>

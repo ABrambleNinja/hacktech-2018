@@ -150,6 +150,8 @@
                                 </div>
 
                             <input class="more-padding form-control input-lg" id="timeLimit" type="text">
+                            <input class="more-padding form-control input-lg" id="password" type="password" />
+
                         </div>
                         </div>
             </div>
@@ -179,10 +181,11 @@
                 timeLimit = document.getElementById('timeLimit').value;*/
                 isTimeLimit = false;
                 timeLimit = 0;
+                password = document.getElementById('password').value;
                 if (isTimeLimit == true) {
-                    var json_data = [num_people, isFancy, locationType, timeLimit];
+                    var json_data = [num_people, isFancy, locationType, timeLimit, password];
                 } else {
-                    var json_data = [num_people, isFancy, locationType, 0];
+                    var json_data = [num_people, isFancy, locationType, 0, password];
                 }
                 $.ajax({
                     type : "POST",

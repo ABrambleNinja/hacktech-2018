@@ -55,6 +55,10 @@
                 The location is {{ location }}.
             {% endif %}
             <br>
+            {% if passw != None %}
+                The password is {{ passw }}.
+            {% endif %}
+            <br />
             {% if time != 0 %}
                 <span id="timer" initial_value="{{ time }}"></span>
             {% endif %}
