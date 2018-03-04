@@ -168,15 +168,17 @@
             function create_game() {
                 num_people = document.getElementById('num_people').value;
                 isFancy = document.getElementById('isFancy').checked;
-                if (document.getElementById('r1').checked ) {
+                //if (document.getElementById('r1').checked ) {
                     locationType = "random";
-                } else if (document.getElementById('r2') ) {
+                /*} else if (document.getElementById('r2') ) {
                     locationType = "democratic";
                 } else if (document.getElementById('r3')) {
                     locationType = "dictatorship";
-                }
-                isTimeLimit = document.getElementById('isTimeLimit').checked;
-                timeLimit = document.getElementById('timeLimit').value;
+                }*/
+                /*isTimeLimit = document.getElementById('isTimeLimit').checked;
+                timeLimit = document.getElementById('timeLimit').value;*/
+                isTimeLimit = false;
+                timeLimit = 0;
                 if (isTimeLimit == true) {
                     var json_data = [num_people, isFancy, locationType, timeLimit];
                 } else {
