@@ -8,8 +8,10 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 
+    <link rel="shortcut icon" href="\static\favicon.ico">
+
     <title>
-        S.A.D.
+        Secret Agent Descent
     </title>
   </head>
   <body>
@@ -41,11 +43,11 @@
         </div>
       </div>
 
-    <nav class="navbar navbar-toggleable-md navbar-dark bg-inverse">
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand " href="#">SAD</a>
+        <a class="navbar-brand " href="#">Secret Agent Descent</a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
@@ -76,7 +78,7 @@
     </style>
 
     <div class="container" style="width:100%; margin-left:0px; margin-right:0px;">
-        <div class="row align-items-center" style="padding-top:15px; background-color: grey; padding-bottom:15px">
+        <div class="row align-items-center" style="padding-top:15px; background-color: #C0C0C0; padding-bottom:15px">
             <!-- this is the header -->
             <div class="col-sm-1 no-padding " style="padding-left:0px; padding-right:0px;"></div>
             <div class="col-sm-2 no-padding" >
@@ -93,7 +95,7 @@
 
             </div>
             <div class="col">
-                <button class="btn btn-danger btn-lg" onclick="create_game()">Create Game!</button>
+                <button class="btn btn-danger btn-lg" onclick="create_game()">Create Game</button>
             </div>
             <div class="col">
                     <button class="btn-lg btn btn-danger" data-toggle="modal" data-target="#exampleModal">
@@ -120,11 +122,13 @@
                     <div class="card bg-faded">
                         <div class="card-block">
 
-                            <textarea class="more-padding form-control input-lg" id="game_url" type="text" readonly style="text-align: center;font-size:2em; resize: none;" rows="1"> No Game Created </textarea>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="game_url" value="No Game Created" readonly style="text-align: center;font-size:2em; resize: none;" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-danger btn-lg" onclick="copyURL()" type="button">Copy URL</button>
+                                </div>
+                            </div>
 
-                            <button class="more-padding btn btn-danger" onclick="copyURL()">
-                                Copy URL
-                            </button>
 
                             Number of People: <input class="more-padding form-control input-lg" id="num_people" type="text" value="{{ default_people }}">
                             <!-- Make this a dropdown -->
