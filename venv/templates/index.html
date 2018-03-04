@@ -1,70 +1,184 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>SAD</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    </head>
-    <body>
-        <div id="root"></div>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <button onclick="create_game()">Create Game!</button>
-        <br>
-        <textarea id="game_num">Enter the ID here</textarea>
-        <br>
-        <button>
-            <a id="join_game_btn" onmousedown="join_game()" href="">"Join Game"</a>
-        </button>
-        <br>
-        <button onclick="getLan()">
-            See LAN Games
-        </button>
-        <div id="lan results"></div>
-        <br>
-        <textarea id="game_url">
-            - No Game Created -
-        </textarea>
-        <br>
-        <button onclick="copyURL()">
-            Copy URL
-        </button>
-        <br>
-        <br>
-        Number of People: <input id="num_people" type="text" value="{{ default_people }}">
-        <!-- Make this a dropdown -->
-        Custom Location: No
-        <br>
-        Fancy: <input id="isFancy" type="checkbox" checked>
-        <br>
-        Location Picking:
-        <br>
-        Random:
-        <input id="r1" type="radio" name="locationPick" value="Random" checked>
-        <br>
-        Democratic
-        <input id="r2" type="radio" name="locationPick" value="Democratic">
-        <br>
-        Dictatorship
-        <input id="r3" type="radio" name="locationPick" value="Dictatorship">
-        <br>
-        Time Limit (Seconds)
-        <input type="checkbox" id="isTimeLimit">
-        <input id="timeLimit" type="text">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-        <script src="/static/js/main.js"></script>
-        <script>
+    <title>
+        S.A.D.
+    </title>
+  </head>
+  <body>
+
+    </button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+
+              <h5 class="modal-title" id="exampleModalLabel">Enter the Game ID</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+
+                <input class="form-control input-lg" type="text" id="game_num">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"               data-dismiss="modal">Close</button>
+                <a id="join_game_btn" onmousedown="join_game();" href=" ">
+                    <button type="button" class="btn btn-success">GO!</button>
+                </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <nav class="navbar navbar-toggleable-md navbar-dark bg-inverse">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand " href="#">SAD</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="#">How to Play</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="#">About Us</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
+        </form>
+        </div>
+    </nav>
+
+    <style>
+        .no-padding {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .more-padding {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+    <div class="container" style="width:100%; margin-left:0px; margin-right:0px;">
+        <div class="row align-items-center" style="padding-top:15px; background-color: grey; padding-bottom:15px">
+            <!-- this is the header -->
+            <div class="col-sm-1 no-padding " style="padding-left:0px; padding-right:0px;"></div>
+            <div class="col-sm-2 no-padding" >
+                <img src="\static\icon.png" style="width:100%"></img>
+            </div>
+            <div class="col-sm-9 no-padding " class="justify-content-center;
+            "><center>
+                <img src="\static\title.png" style="width:65%"></img>
+            </center></div>
+        </div>
+
+        <div class="row align-items-center justify-content-center" style="margin-top:35px; margin-bottom:10px">
+            <div class="col">
+
+            </div>
+            <div class="col">
+                <button class="btn btn-danger btn-lg" onclick="create_game()">Create Game!</button>
+            </div>
+            <div class="col">
+                    <button class="btn-lg btn btn-danger" data-toggle="modal" data-target="#exampleModal">
+                        Join Game
+                    </button>
+            </div>
+            <div class="col">
+                <button class="btn  btn-lg btn-danger" onclick="getLan()">
+                    See Local Games
+                </button>
+            </div>
+            <div class="col">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="width: 100%; padding-top: 25px;">
+        <div class="row">
+            <div class="col-sm-1">
+
+            </div>
+            <div class="col-sm-10">
+                    <div class="card bg-faded">
+                        <div class="card-block">
+
+                            <textarea class="more-padding form-control input-lg" id="game_url" type="text" readonly style="text-align: center;font-size:2em; resize: none;" rows="1"> No Game Created </textarea>
+
+                            <button class="more-padding btn btn-danger" onclick="copyURL()">
+                                Copy URL
+                            </button>
+
+                            Number of People: <input class="more-padding form-control input-lg" id="num_people" type="text" value="{{ default_people }}">
+                            <!-- Make this a dropdown -->
+                            Custom Location: No
+
+                            <label class="more-padding custom-control custom-checkbox">
+                                <input type="checkbox" id="isFancy" class="custom-control-input">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Fancy</span>
+                            </label>
+
+                            Location Picking
+
+                            <!-- Example single danger button -->
+                            <div class="btn-group">
+                                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Random
+                                    </button>
+                                    <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Vote</a>
+                                    <a class="dropdown-item" href="#">Owner's Choice</a>
+                                    </div>
+                                </div>
+
+                            <input class="more-padding form-control input-lg" id="timeLimit" type="text">
+                        </div>
+                        </div>
+            </div>
+            <div class="col-sm-1">
+
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+    <script>
             function create_game() {
                 num_people = document.getElementById('num_people').value;
                 isFancy = document.getElementById('isFancy').checked;
-                if (document.getElementById('r1').checked ) {
+                //if (document.getElementById('r1').checked ) {
                     locationType = "random";
-                } else if (document.getElementById('r2') ) {
+                /*} else if (document.getElementById('r2') ) {
                     locationType = "democratic";
                 } else if (document.getElementById('r3')) {
                     locationType = "dictatorship";
-                }
-                isTimeLimit = document.getElementById('isTimeLimit').checked;
-                timeLimit = document.getElementById('timeLimit').value;
+                }*/
+                /*isTimeLimit = document.getElementById('isTimeLimit').checked;
+                timeLimit = document.getElementById('timeLimit').value;*/
+                isTimeLimit = false;
+                timeLimit = 0;
                 if (isTimeLimit == true) {
                     var json_data = [num_people, isFancy, locationType, timeLimit];
                 } else {
@@ -109,17 +223,7 @@
                 copyTextarea.select();
                 document.execCommand('copy');
             }
-        </script>
-        <p id="gps">Latitude: ??? <br/>
-            Longitude: ???
-        </p>
-        <button onclick="getLocation()">Get Location</button>
-        <p id="mapholder">
-            This is a placeholder for the fudging gosh darned map that will appear here
-        </p>
-    </body>
 
-    <script>
         var x = document.getElementById("gps");
         function getLocation() {
             if (navigator.geolocation) {
@@ -157,4 +261,7 @@
         console.log(position.coords.longitude)
         }
     </script>
+
+</body>
+
 </html>

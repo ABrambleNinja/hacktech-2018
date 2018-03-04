@@ -1,7 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+//import App from './App';
+
+require('bootstrap/dist/css/bootstrap.min.css');
 
 ReactDOM.render(
-    <h1>Hello, world!</h1>,
+    <button class="btn btn-primary">Hello</button>,
+    //<App />,
     document.getElementById('root')
 );
