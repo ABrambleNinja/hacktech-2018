@@ -2,6 +2,7 @@ import json
 import pprint
 import random
 import os
+import math
 
 from flask import Flask, session, render_template, request, url_for, abort
 
@@ -203,7 +204,9 @@ def gpsdata():
     playerID = getID()
     DATA.playerList[playerID] = {data}
     print(playerID)
+    print(DATA.playerList[playerID])
     session['playerID'] = playerID
+    calculateDist(4,5)
     return "Player is in the database"
 
 def getID():
@@ -215,12 +218,35 @@ def getID():
     DATA.playerID += 1
     return playerID
 
-def calculateDist(userID,userID2):
+def calculateDist(userID1,userID2):
     '''Finds all the locations in the list that are within x miles of
      user. Uses the formula from '''
-    
-    pass
+    csv1 = str(DATA.playerList[userID1])[3:-2]
+    csv2 = str(DATA.playerList[userID2])[3:-2]
+    gps1 = csv1.split(',')
+    gps2 = csv2.split(',')
+    gps1 = list(map(float,gps1))
+    gps2 = list(map(float,gps2))
+    lat1 = gps1[0]
+    lon1 = gps1[1]
+    lat2 = gps2[0]
+    lon2 = gps2[1]
+    distance = distFromLats(lat1,lon1,lat2,lon2)
+    print(distance)
+    return distance
 
+def degreesToRadians(degrees):
+  return degrees * 3.14159265 / 180
+
+def distFromLats(lat1,lon1,lat2,lon2):
+    earthRadiusKm = 6371
+    dLat = degreesToRadians(lat2-lat1)
+    dLon = degreesToRadians(lon2-lon1)
+    lat1 = degreesToRadians(lat1)
+    lat2 = degreesToRadians(lat2)
+    a = math.sin(dLat/2) * math.sin(dLat/2) + math.sin(dLon/2) * math.sin(dLon/2) * math.cos(lat1) * math.cos(lat2) 
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    return earthRadiusKm * c
 
 @app.errorhandler(404)
 def page_not_found(description):
