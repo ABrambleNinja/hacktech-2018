@@ -2,6 +2,7 @@ import json
 import pprint
 import random
 import os
+import math
 
 from flask import Flask, session, render_template, request, url_for, abort, session
 
@@ -93,8 +94,7 @@ def join_game(id_num):
 
 @app.route('/gpsdata', methods=["POST"])
 def gpsdata():
-    ''' Gets GPS coordinates from the user, assigns an ID, and
-    appends to the list'''
+   ''' Gets GPS coordinates from the user, assigns an ID, and appends to the list'''
     data = request.data
     playerID = getID()
     DATA.playerList[playerID] = {data}
@@ -114,9 +114,9 @@ def getID():
 def calculateDist(userID,userID2):
     '''Finds all the locations in the list that are within x miles of
      user. Uses the formula from '''
-
+    
     pass
-
+  
 @app.errorhandler(404)
 def page_not_found(description):
     return render_template('404.html', desc=description)
@@ -264,10 +264,143 @@ class Game:
         for player_id, player_tuple in self.player_dictionary:
             timesAccused[player_tuple[1]] += 1
 
-        for num in timesAccused:
-            if num >= self.num_people:
-                return "Win"
-        return "Loss"
+@app.route('/newgame', methods=["POST"])
+def new_game():
+    ''' Creates a new game '''
+    # make new game
+    L = request.get_json()
+    isFancy = L[1]
+    try:
+        num_players = int(L[0])
+    except:
+        num_players = DATA.DEFAULT_SIZE
+
+    location_type = L[2]
+    time_limit = L[3]
+
+    if (len(DATA.games) < DATA.GAME_CAP):
+        # Initialize the game
+        newGame = Game(num_players, isFancy, location_type, time_limit)
+        # Find new game location (available ID)
+        indexValue = Game.next_game_id()
+
+        # Add the game in the right ID location
+        if indexValue is None:
+            # If indexValue is None, we must add more slots
+            DATA.games.append(newGame)
+            indexValue = len(DATA.games) - 1
+        else:
+            # Otherwise, we can add it to the regular location
+            DATA.games[indexValue] = newGame
+
+        # Return the ID of the game to the player (to get URL)
+        return json.dumps(indexValue)
+    else:
+        return json.dumps("Cannot Create More Games")
+
+
+@app.route('/game/<int:id_num>')
+def join_game(id_num):
+    ''' Connects user to existing game - if possible '''
+    if (id_num >= len(DATA.games) or (DATA.games[id_num] is None)):
+        abort(404, description="Not a Valid Game")
+    else:
+        game = DATA.games[int(id_num)]
+        role, location = game.join_game(int(id_num))
+
+    return render_template("game.html", gameID=id_num,
+                           numPlayers=game.current_players,
+                           role=role,
+                           maxPlayers=game.num_people,
+                           location=location,
+                           time=game.time_limit)
+
+
+@app.route('/gpsdata', methods=["POST"])
+def gpsdata():
+    ''' Gets GPS coordinates from the user, assigns an ID, and 
+    appends to the list'''
+    data = request.data
+    playerID = getID()
+    DATA.playerList[playerID] = {data}
+    print(playerID)
+    print(DATA.playerList[playerID])
+    session['playerID'] = playerID
+    return "Player is in the database"
+
+def getID():
+    '''Takes the data variable playerID, assigns it to a user, and
+       then increments by 1 to give the player a unique id'''
+    playerID = DATA.playerID
+    if 'playerID' in session:
+        return (session['playerID'])
+    DATA.playerID += 1
+    return playerID
+
+def calculateDist(userID1,userID2):
+    '''Finds all the locations in the list that are within x miles of
+     user. Uses the formula from '''
+    # the data associated with a user ID is a weird set, this extracts
+    # the actual coordinates
+    csv1 = str(DATA.playerList[userID1])[3:-2]
+    csv2 = str(DATA.playerList[userID2])[3:-2]
+    gps1 = csv1.split(',')
+    gps2 = csv2.split(',')
+    gps1 = list(map(float,gps1))
+    gps2 = list(map(float,gps2))
+    lat1 = gps1[0]
+    lon1 = gps1[1]
+    lat2 = gps2[0]
+    lon2 = gps2[1]
+    distance = distFromLats(lat1,lon1,lat2,lon2)
+    print(distance)
+    return distance
+
+def degreesToRadians(degrees):
+    '''degrees --> radians '''
+    return degrees * 3.14159265 / 180
+
+def distFromLats(lat1,lon1,lat2,lon2):
+    '''formula for calculating distance between spherical coordinates, outputs distance'''
+    earthRadiusKm = 6371
+    dLat = degreesToRadians(lat2-lat1)
+    dLon = degreesToRadians(lon2-lon1)
+    lat1 = degreesToRadians(lat1)
+    lat2 = degreesToRadians(lat2)
+    a = math.sin(dLat/2) * math.sin(dLat/2) + math.sin(dLon/2) * math.sin(dLon/2) * math.cos(lat1) * math.cos(lat2) 
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    return earthRadiusKm * c
+
+@app.errorhandler(404)
+def page_not_found(description):
+    return render_template('404.html', desc=description)
+
+@app.route('/role_test')
+def get_some_role():
+    return get_role(get_location())
+
+
+def get_location():
+    ''' Returns the user's location from the set of possible values '''
+    return random.choice(list(DATA.locations_dict.keys()))
+
+
+def get_role(location, fancy=True):
+    ''' Given a location, returns one of the possible roles from the location.
+    If fancy is enabled, this will also choose some color and an adjective '''
+    role = random.choice(DATA.locations_dict[location])
+    if (fancy):
+        color = random.choice(DATA.colors_list)
+        adjective = random.choice(DATA.adjectives_list)
+        return (role, color + " " + adjective[0].upper() + adjective[1:] + " " + role)
+    else:
+        return role
+
+
+def testing():
+    ''' A function used on startup if in debugging mode '''
+    print("In debugging mode")
+    print(get_role(get_location(), True))
 
 
 
