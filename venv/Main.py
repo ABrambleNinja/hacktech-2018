@@ -81,11 +81,16 @@ def how_to_play_f():
 def how_to_play():
     return render_template("about-us.html")
 
+@app.route('/save_drawings', methods=["POST"])
+def save_the_whales():
+    ''' '''
+    session['drawing'] = request.get_json()
+    return json.dumps("")
+
 
 @app.route('/game/<id_num>', methods = ["GET", "POST"])
 def join_game(id_num):
     ''' Connects user to existing game - if possible '''
-    print(id_num)
     try:
         id_num = int(id_num)
     except:
@@ -207,8 +212,14 @@ class Game:
 
     def join_game(self, gameid):
         ''' Allows a new person to join the game '''
-        if 'gameid' in session and session['gameid'] == gameid: # person is already here
-            return (self.player_dictionary[session['userid']][0], self.location)
+        if 'drawing' in session:
+            drawings = session['drawing']
+        else:
+            session['drawing'] = []
+
+        if 'gameid' in session and session['gameid'] == gameid:  # person is already here
+            return (self.player_dictionary[session['userid']][0],
+                    self.location)
 
         session['gameid'] = gameid
         session['userid'] = self.current_players
@@ -370,9 +381,8 @@ def testing():
     print(get_role(get_location(), True))
 
 
-
 if __name__ == "__main__":
-    app.secret_key = os.urandom(24)
+    app.secret_key = "12837198276348971263784961278364182736"
     debugging = True
     app.config['DEBUG'] = debugging
 
