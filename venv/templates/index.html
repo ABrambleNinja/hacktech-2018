@@ -191,8 +191,15 @@
                     dataType: 'json',
                     contentType: 'application/json;charset=UTF-8',
                     success: function(result) {
-                        $('#game_num').html(result);
-                        $('#game_url').html("secretagentdescent.com/game/" + result);
+                        if (result[0] == "error") {
+                            $('#game_num').html(result[1]);
+                            $('#game_url').html("");
+                        } else {
+                            $('#game_num').html(result[1]);
+                            $('#game_url').html("secretagentdescent.com/game/" + result[1]);
+                        }
+
+
                     }
                 });
             }
@@ -252,20 +259,6 @@
         );
         console.log(position.coords.latitude);
         console.log(position.coords.longitude)
-        }
-        function sendID(position){
-            var userID = Math.floor(Math.random()*1000)
-            $.ajax({
-                type : "POST",
-                url : "http://127.0.0.1:5000/userID",
-                data: JSON.stringify(userID),
-                contentType: 'application/json;charset=UTF-8',
-                success: function(result) {
-                    console.log(result);
-                }
-            }
-        );
-        console.log(userID);
         }
     </script>
 
