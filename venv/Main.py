@@ -73,6 +73,14 @@ def new_game():
     else:
         return json.dumps(["error", "Cannot Create More Games"])
 
+@app.route('/how-to-play')
+def how_to_play_f():
+    return render_template("how-to-play.html")
+
+@app.route('/about-us')
+def how_to_play():
+    return render_template("about-us.html")
+
 
 @app.route('/game/<id_num>', methods = ["GET", "POST"])
 def join_game(id_num):
@@ -104,7 +112,7 @@ def join_game(id_num):
 
 
 @app.errorhandler(404)
-def page_not_found(description):
+def page_not_found(e, description):
     return render_template('404.html', desc=description)
 
 
