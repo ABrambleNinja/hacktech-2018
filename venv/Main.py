@@ -248,10 +248,10 @@ def gpsdata():
     data = request.data
     playerID = getID()
     DATA.playerList[playerID] = {data}
-    print(playerID)
     session['playerID'] = playerID 
-    #newDistEntry = updatePlayerMatrix(playerID)
-    #DATA.distanceMatrix.append(newDistEntry)
+    newDistEntry = updatePlayerMatrix(playerID)
+    DATA.distanceMatrix.append(newDistEntry)
+    players = findUsersWithinXMiles(playerID,500)
     return "Player is in the database"
 
 def getID():
@@ -268,22 +268,35 @@ def updateNumPlayers():
     DATA.numPlayers = len(DATA.playerList.keys())
     return
 
-''' def updatePlayerMatrix(playerID):
+def updatePlayerMatrix(playerID):
     keyList = list(DATA.playerList.keys())
-    print(keyList)
     if len(keyList) == 1:
         keyList = []
     else:
         keyList.remove(playerID)
-    print(keyList)
     if len(keyList) <= 0:
         return
     newPlayerMatrix = []
     for i in range (DATA.numPlayers):
-        print(i)
-        newPlayerMatrix[i] = calculateDist(playerID,keyList[i])
+        newPlayerMatrix.append(calculateDist(playerID,keyList[i]))
     return newPlayerMatrix
- '''
+
+def findUsersWithinXMiles(playerID, x):
+    keyList = list(DATA.playerList.keys())
+    playerIndexinMatrix = keyList.index(playerID)
+    outputPlayers = []
+    for i in range (DATA.numPlayers):
+        if i<playerIndexinMatrix:
+            if DATA.distanceMatrix[playerIndexinMatrix][i] < x:
+                closePlayer = keyList[i]
+                outputPlayers.append(closePlayer)
+        else:
+            if DATA.distanceMatrix[i+1][playerIndexinMatrix] < x:
+                closePlayer = keyList[i+1]
+                outputPlayers.append(closePlayer)
+    return outputPlayers
+        
+
 def calculateDist(userID1,userID2):
     '''Finds all the locations in the list that are within x miles of
      user. Uses the formula from '''
@@ -300,7 +313,6 @@ def calculateDist(userID1,userID2):
     lat2 = gps2[0]
     lon2 = gps2[1]
     distance = distFromLats(lat1,lon1,lat2,lon2)
-    print(distance)
     return distance
 
 def degreesToRadians(degrees):

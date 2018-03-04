@@ -101,8 +101,8 @@
                     </button>
             </div>
             <div class="col">
-                <button class="btn  btn-lg btn-danger" onclick="getLan()">
-                    See Local Games
+                <button class="btn  btn-lg btn-danger" onclick="getLocation()">
+                    Find Games
                 </button>
             </div>
             <div class="col">
@@ -157,6 +157,12 @@
 
             </div>
         </div>
+        <p id="gps">Latitude: ??? <br/>
+            Longitude: ???
+          </p>
+          <p id="mapholder">
+                This is a placeholder for the badass goddamn map that will appear here
+          </p>
     </div>
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
@@ -262,6 +268,7 @@
         }
     </script>
 
+</script>
 </body>
 
 </html>
